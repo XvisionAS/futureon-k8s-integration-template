@@ -47,11 +47,11 @@ build:
 
   # List of images to build
   images:
-    - name: backend
+    - name: nodejs
       contextPath: backends/nodejs
       target: development
-    - name: frontend
-      contextPath: frontend/vuejs
+    - name: vuejs
+      contextPath: frontends/vuejs
       target: development
 
   # Kubernetes resource specification for build pods

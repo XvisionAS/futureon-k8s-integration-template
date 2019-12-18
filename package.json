@@ -11,5 +11,9 @@
 	"devDependencies": {
 		"@skalar/kpd-cli": "^1.1.0-alpha.0",
 		"@skalar/kpd-server": "~1.3.7-alpha.0"
+	},
+	"dependencies": {
+		"ts-node": "^8.5.4",
+		"typescript": "^3.7.3"
 	}
 }
