@@ -1,0 +1,20 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*"
+    ]
+  },
+  "scripts": {
+    "development": "nodemon",
+    "start": "sleep 2;node --max-http-header-size=32768 --max-old-space-size=2048 --use-strict --inspect=0.0.0.0:9229 ./bin/www",
+    "production": "node --use-strict --max-http-header-size=32768 --max-old-space-size=2048 --inspect=0.0.0.0:9229 ./bin/www"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.2"
+  },
+  "author": "",
+  "license": "ISC"
+}

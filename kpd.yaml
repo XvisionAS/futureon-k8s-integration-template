@@ -1,0 +1,87 @@
+# Extend kpd with files in repo
+instance: ${RELEASE}
+# extensionPaths:
+#   - 'support/kpd'
+
+logLevel: debug
+
+kubernetes:
+  context: ${KUBE_CONTEXT}
+  namespace: ${KUBE_NAMESPACE}
+
+x-node-debug: &nodeDebug
+  port: 9229
+  type: node
+  sourceMaps: true
+  restart: true
+  protocol: inspector
+
+# x-core-shared: &coreShared
+#   updepCommand: npm
+#   shellCommand: ash
+#   debug:
+#     <<: *nodeDebug
+#     localRoot: ${rootPath}/core
+#     remoteRoot: /core
+#   sync:
+#     - localPath: core
+#       containerPath: /core
+#       excludeDirs: [node_modules]
+
+
+# Docker image build config
+build:
+  buildArgs:
+    EXAMPLE_ENV:${USER}
+  # Where to store the build docker images
+  registry:
+    # Where to store the build docker images
+    url: registry.toc.systems
+    # Secret containing docker config with credentials to the image repository
+    secretName: regcred
+  bucket:
+    # Credentials for bucket used for temporary build context storage
+    secretName: ${USER}-${RELEASE}-jsonapi-sa
+
+
+  # List of images to build
+  images:
+    - name: backend
+      target: development
+    - name: frontend
+      target: development
+
+  # Kubernetes resource specification for build pods
+  resources:
+    requests: { cpu: '200m', memory: 1Gi }
+    limits: { cpu: '1', memory: 1Gi }
+
+# List of system components to interact with
+components:
+  - name: backend
+    containers:
+      - name: backend
+        debug:
+          <<: *nodeDebug
+          localRoot: ${rootPath}/backend
+          remoteRoot: /app
+        sync:
+          - localPath: backend
+            containerPath: /app
+            excludeDirs: [node_modules]
+  - name: frontend
+    containers:
+      - name: frontend
+        sync:
+          - localPath: frontend
+            containerPath: /app
+            excludeDirs: [node_modules,tmp,dist]
+stackManager:
+  type: "helm"
+  config:
+    chartPath: helm/integration
+    values:
+      # here you put value that we pass 
+      # mongodb.existingSecret: ${RELEASE}-mongodb
+      # region: ${REGION}
+    helmV3: true

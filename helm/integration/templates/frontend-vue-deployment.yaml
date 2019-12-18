@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "integration.frontendvue.fullname" . }}
+  labels:
+    {{- include "integration.frontendvue.labels" . | nindent 4 }}
+  annotations:
+    timestamp: "{{ ((now).Unix) }}"
+spec:
+  replicas: {{ .Values.frontendvue.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "integration.frontendvue.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "integration.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "integration.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}/{{.Values.frontendvue.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: BACKEND
+              value: http://{{index (index .Values.backend.ingress.hosts 0) "host" }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.frontendvue.resources | nindent 12 }}
+    #   {{- with .Values.nodeSelector }}
+    #   nodeSelector:
+    #     {{- toYaml . | nindent 8 }}
+    #   {{- end }}
+    # {{- with .Values.affinity }}
+    #   affinity:
+    #     {{- toYaml . | nindent 8 }}
+    # {{- end }}
+    # {{- with .Values.tolerations }}
+    #   tolerations:
+    #     {{- toYaml . | nindent 8 }}
+    # {{- end }}
