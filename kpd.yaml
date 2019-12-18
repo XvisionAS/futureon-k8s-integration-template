@@ -32,7 +32,8 @@ x-node-debug: &nodeDebug
 # Docker image build config
 build:
   buildArgs:
-    EXAMPLE_ENV:${USER}
+    EXAMPLE_ENV: ${USER}
+    
   # Where to store the build docker images
   registry:
     # Where to store the build docker images
@@ -47,8 +48,10 @@ build:
   # List of images to build
   images:
     - name: backend
+      contextPath: backends/nodejs
       target: development
     - name: frontend
+      contextPath: frontend/vuejs
       target: development
 
   # Kubernetes resource specification for build pods
@@ -80,7 +83,7 @@ stackManager:
   type: "helm"
   config:
     chartPath: helm/integration
-    values:
+    #values:
       # here you put value that we pass 
       # mongodb.existingSecret: ${RELEASE}-mongodb
       # region: ${REGION}
