@@ -63,17 +63,17 @@ components:
       - name: backend
         debug:
           <<: *nodeDebug
-          localRoot: ${rootPath}/backend
+          localRoot: ${rootPath}/backends/nodejs
           remoteRoot: /app
         sync:
-          - localPath: backend
+          - localPath: backends/nodejs
             containerPath: /app
             excludeDirs: [node_modules]
-  - name: frontend
+  - name: frontendvue
     containers:
-      - name: frontend
+      - name: frontendvue
         sync:
-          - localPath: frontend
+          - localPath: frontends/vuejs
             containerPath: /app
             excludeDirs: [node_modules,tmp,dist]
 stackManager:

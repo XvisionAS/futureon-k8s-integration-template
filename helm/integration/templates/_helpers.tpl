@@ -28,6 +28,20 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
+{{- define "integration.fullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+
 {{/*
 Expand the name of the chart.
 */}}
@@ -67,6 +81,10 @@ Frontend VUE
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "integration.frontendvue.hostname" -}}
+{{- $defaultHostname := printf "%s.%s" (include "integration.frontendvue.fullname" .) .Values.defaultDnsDomain }}
+{{- default .Values.frontendvue.hostname $defaultHostname -}}
+{{- end -}}
 
 {{/*
 Common labels
@@ -80,8 +98,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 app.kubernetes.io/name: {{ template "futureon.frontendvue.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: {{ template "futureon.frontendvue.name" . }}
 
 
 
@@ -110,6 +126,11 @@ Backend VUE
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "integration.backend.hostname" -}}
+{{- $defaultHostname := printf "%s.%s" (include "integration.backend.fullname" .) .Values.defaultDnsDomain }}
+{{- default .Values.backend.hostname $defaultHostname -}}
+{{- end -}}
+
 
 {{/*
 Common labels
@@ -122,8 +143,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
-app.kubernetes.io/name: {{ template "futureon.backend.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: {{ template "futureon.backend.name" . }}
 
 

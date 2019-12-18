@@ -1,0 +1,321 @@
+Release "integration" does not exist. Installing it now.
+NAME: integration
+LAST DEPLOYED: Wed Dec 18 13:11:21 2019
+NAMESPACE: olivier-test
+STATUS: pending-install
+REVISION: 1
+USER-SUPPLIED VALUES:
+defaultDnsDomain: toc.systems
+image:
+  tag: master.d2aa62f.olivier-dirty.development.2ba6be912479b3835be4cee46a437c08
+
+COMPUTED VALUES:
+backend:
+  affinity: {}
+  image:
+    name: nodejs
+  ingress:
+    annotations: {}
+    enabled: true
+    tls: []
+  nodeSelector: {}
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 40Mi
+  service:
+    port: 80
+    type: ClusterIP
+  tolerations: []
+defaultDnsDomain: toc.systems
+frontendvue:
+  affinity: {}
+  image:
+    name: vuejs
+  ingress:
+    annotations: {}
+    enabled: true
+    tls: []
+  nodeSelector: {}
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 40Mi
+  service:
+    port: 80
+    type: ClusterIP
+  tolerations: []
+image:
+  pullPolicy: IfNotPresent
+  repository: nginx
+  tag: master.d2aa62f.olivier-dirty.development.2ba6be912479b3835be4cee46a437c08
+imagePullSecrets: []
+podSecurityContext: {}
+securityContext: {}
+serviceAccount:
+  create: true
+  name: null
+
+HOOKS:
+---
+# Source: integration/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "integration-frontendvue-test-connection"
+  labels:
+
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: frontendvue
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['integration-frontendvue:80']
+  restartPolicy: Never
+---
+# Source: integration/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "integration-backend-test-connection"
+  labels:
+
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['integration-backend:80']
+  restartPolicy: Never
+MANIFEST:
+---
+# Source: integration/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: integration
+  labels:
+
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: integration
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+---
+# Source: integration/templates/backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: integration-backend
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: integration
+---
+# Source: integration/templates/frontend-vue-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: integration-frontendvue
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: frontendvue
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: frontendvue
+    app.kubernetes.io/instance: integration
+---
+# Source: integration/templates/backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration-backend
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    timestamp: "1576671081"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backend
+      app.kubernetes.io/instance: integration
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backend
+        app.kubernetes.io/instance: integration
+    spec:
+      serviceAccountName: integration
+      securityContext:
+        {}
+      containers:
+        - name: integration
+          securityContext:
+            {}
+          image: "nginx/nodejs:master.d2aa62f.olivier-dirty.development.2ba6be912479b3835be4cee46a437c08"
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "40Mi"
+              cpu: "100m"  
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            requests:
+              cpu: 100m
+              memory: 40Mi
+    #
+    #
+    #
+---
+# Source: integration/templates/frontend-vue-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration-frontendvue
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: frontendvue
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    timestamp: "1576671081"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontendvue
+      app.kubernetes.io/instance: integration
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontendvue
+        app.kubernetes.io/instance: integration
+    spec:
+      serviceAccountName: integration
+      securityContext:
+        {}
+      containers:
+        - name: integration
+          securityContext:
+            {}
+          image: "nginx/vuejs:master.d2aa62f.olivier-dirty.development.2ba6be912479b3835be4cee46a437c08"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BACKEND
+              value: http://integration-backend.toc.systems
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            requests:
+              cpu: 100m
+              memory: 40Mi
+    #
+    #
+    #
+---
+# Source: integration/templates/backend-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: backend
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: integration-backend.toc.systems
+      http:
+        paths:
+          - path:
+            backend:
+              serviceName: backend
+              servicePort: http
+---
+# Source: integration/templates/frontend-vue-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: integration-frontendvue
+  labels:
+    helm.sh/chart: integration-0.1.0
+    app.kubernetes.io/name: frontendvue
+    app.kubernetes.io/instance: integration
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  rules:
+    - host: integration-frontendvue.toc.systems
+      http:
+        paths:
+          - path:
+            backend:
+              serviceName: integration-frontendvue
+              servicePort: http
+

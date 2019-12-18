@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "integration.selectorLabels" . | nindent 8 }}
+        {{- include "integration.frontendvue.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -31,7 +31,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: BACKEND
-              value: http://{{index (index .Values.backend.ingress.hosts 0) "host" }}
+              value: http://{{ template "integration.backend.hostname" . }}
           ports:
             - name: http
               containerPort: 80

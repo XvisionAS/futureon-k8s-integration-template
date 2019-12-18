@@ -27,7 +27,15 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.frontendvue.ingress.hosts }}
+    - host: {{ template "integration.frontendvue.hostname" . }}
+      http:
+        paths:
+          - path:
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: http
+  {{- if .Values.frontendvue.ingress.hosts }}  
+    {{- range .Values.frontendvue.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -37,5 +45,6 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: http
         {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}

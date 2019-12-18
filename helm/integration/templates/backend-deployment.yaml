@@ -14,7 +14,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "integration.selectorLabels" . | nindent 8 }}
+        {{- include "integration.backend.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -29,6 +29,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}/{{ .Values.backend.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: "80"
           resources:
             requests:
               memory: "40Mi"

@@ -3,9 +3,9 @@
 set -o errexit
 set -o pipefail
 
-RELEASE=integration
+export RELEASE=${RELEASE:-$USER-integration}
 
-chartPath="helm/$RELEASE"
+chartPath="helm/integration"
 
 declare -A images
 
@@ -70,7 +70,6 @@ while getopts "rcn:" opt; do
     \?) exit 1;; # Invalid argument
     esac
 done
-
 
 export BUILD_TARGET=${BUILD_TARGET:-production}
 
@@ -234,6 +233,8 @@ case "$1" in
       --namespace $KUBE_NAMESPACE \
       $configVals \
       --set image.tag=$(imageTag) \
+      --set image.repository=$IMAGE_REGISTRY \
+      --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
         ${@:2}
     ;;
 
@@ -246,7 +247,7 @@ case "$1" in
     fi
     break
     done
-    _helm delete $RELEASE ${@:2}
+    _helm delete $RELEASE ${@:2} --namespace $KUBE_NAMESPACE
     ;;
 
   "exec"|"e")
