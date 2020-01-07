@@ -79,6 +79,7 @@ components:
           - localPath: frontends/vuejs
             containerPath: /app
             excludeDirs: [node_modules,tmp,dist]
+
 stackManager:
   type: "helm"
   config:

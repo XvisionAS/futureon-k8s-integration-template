@@ -2,9 +2,9 @@
   "apiVersion": "v1",
   "kind": "Namespace",
   "metadata": {
-    "name": "olivier-test",
+    "name": "mattfozard",
     "labels": {
-      "name": "olivier-test"
+      "name": "mattfozard"
     }
   }
 }
