@@ -38,8 +38,7 @@ For using `.envrc`, just type `source .envrc` before launching `kpd`.
 
 Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables.
 
-The script is named `devops.sh`. It requires bash v4 or later, which on Mac OS
-requires installing a newer version of bash.
+The script is named `devops.sh`. It requires bash v4 or later, which on Mac OS requires installing a newer version of bash. On Mac OS you also need to create the `md5sum` utility by running `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`.
 
 Commands are :
 
@@ -103,5 +102,4 @@ And finally `values.yaml` which sets the default values used everywhere in the c
 
 ## Deployed integration
 
-After running `devops.sh deploy`, run `devops.sh status` to show the host names
-that the deployed integration is mapped to.
+After running `devops.sh deploy`, run `devops.sh status` to show the host names that the deployed integration is mapped to.
