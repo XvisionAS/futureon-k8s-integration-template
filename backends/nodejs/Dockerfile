@@ -8,12 +8,12 @@ WORKDIR /app
 FROM base as development
 
 COPY package.json package-lock.json ./
+ENV NODE_PATH=/app
+
 RUN apk -U --no-cache add openssl \
   && apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
   && npm install --no-audit --no-cache \
   && apk del --purge build
-
-ENV NODE_PATH=/app
 
 COPY . .
 
@@ -32,6 +32,5 @@ RUN apk -U --no-cache add openssl \
   && apk del --purge build
 
 COPY . .
-
 
 CMD npm run production
