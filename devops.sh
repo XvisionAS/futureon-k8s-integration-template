@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/local/bin/bash
 
 set -o errexit
 set -o pipefail

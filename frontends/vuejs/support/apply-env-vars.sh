@@ -33,7 +33,7 @@ do
   echo "$var => '${!var}'"
   uriencoded=$(uriencode ${!var})
   sed -i "s/\%24$var/$uriencoded/g" index.html
-	sed -i "s%\$$var%${!var}%g" index.html
+  sed -i "s%\$$var%${!var}%g" index.html
   # find . -name "app.*.js" -exec sed -i "s%\$$var%${!var}%g" {}\;
 done
 echo "done"
