@@ -10,7 +10,7 @@ It contains two servers :
 
 2. `backends/nodejs` which is a base Express server, Dockerized as well.
 
-## Before you start
+## Before You Start
 
 Before you start, it is important that you read a bit about **Docker**, **Kubernetes** and **HELM**. 
 
@@ -18,7 +18,7 @@ Before you start, it is important that you read a bit about **Docker**, **Kubern
 * HELM: https://helm.sh/docs/
 * Docker: https://docs.docker.com/engine/docker-overview/
 
-## Environment variables
+## Environment Variables
 
 Here is a list of environment variables that are needed to use either **KPD** or **devops.sh** scripts :
 
@@ -87,7 +87,7 @@ This also mean that you need to configure a file `kpd.yaml` to describe the link
 
 To run `kpd`, from the root of the folders, **AFTER** settings the environment variables, run `npx kpd`. If everything goes well, it should start to output log. At this point, the file are syncing on **TOC**.
 
-## HELM chart
+## HELM Chart
 
 The **HELM** chart for the project can be found in `helm/integration`. **HELM** is basically a template processor for **Kubernetes**, with a notion of *instance* in plus which make it easier to deploy whole application.
 
@@ -100,6 +100,6 @@ There is also `_helper.tpl` that allows to define common *template* to be use in
 
 And finally `values.yaml` which sets the default values used everywhere in the charts ( everything that starts with `.Values` )
 
-## Deployed integration
+## Deployed Integration
 
 After running `devops.sh deploy`, run `devops.sh status` to show the host names that the deployed integration is mapped to.
