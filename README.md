@@ -4,13 +4,13 @@
 
 This really simple sample is a basic skeleton for deployment of an application using **Kubernetes** and **HELM**.
 
-It contains two server :
+It contains two servers :
 
 1. `frontends/vuejs` which is the base application created using `vue-cli`, Dockerized
 
 2. `backends/nodejs` which is a base Express server, Dockerized as well.
 
-## Before You start
+## Before You Start
 
 Before you start, it is important that you read a bit about **Docker**, **Kubernetes** and **HELM**. 
 
@@ -18,7 +18,7 @@ Before you start, it is important that you read a bit about **Docker**, **Kubern
 * HELM: https://helm.sh/docs/
 * Docker: https://docs.docker.com/engine/docker-overview/
 
-## Environment variables
+## Environment Variables
 
 Here is a list of environment variables that are needed to use either **KPD** or **devops.sh** scripts :
 
@@ -31,37 +31,37 @@ Here is a list of environment variables that are needed to use either **KPD** or
 | DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.toc.systems`. |
 | RELEASE            | HELM release name, also use for generating service URL.      |
 
-You can find an example in in /.envrc. You can also use `module` or any virtual env manager. For using `.envrc`, just type `source .envrc`before launching `kpd`
-
+You can find an example in `/.envrc`. You can also use `module` or any virtual env manager.
+For using `.envrc`, just type `source .envrc` before launching `kpd`.
 
 ## First Deploy
 
-Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables. 
+Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables.
 
-The script is named `devops.sh`.
+The script is named `devops.sh`. It requires bash v4 or later, which on Mac OS requires installing a newer version of bash. On Mac OS you also need to create the `md5sum` utility by running `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`.
 
-Command are :
+Commands are :
 
-* `./devlops.sh build` will build all the docker image of the project.
-* `./devlops.sh push` will push all the docker image to the target registry ( defined in ENV variables ).
-* `.devops.sh bush` do build then push.
-* `./devlops.sh deploy` will deploy the charts.
+* `./devops.sh build` will build all the docker image of the project.
+* `./devops.sh push` will push all the docker image to the target registry ( defined in ENV variables ).
+* `./devops.sh bush` do build then push.
+* `./devops.sh deploy` will deploy the charts.
 
 While working with this template to create you own integration, you might need to modify this scripts so that you can pass build argument to **Docker**, or variable values to **HELM** chart.
 
 Do not hesitate to look at it and modify it if needed.
 
-Building image and pushing images is only require when a dependency change ( either in `Dockerfile`, or for example in one of `package.json`)
+Building image and pushing images is only require when a dependency change ( either in `Dockerfile`, or for example in one of `package.json`).
 
 ## Checklist
 
 ### Kubernetes Development cluster
 
-**FutureOn** for all is development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate. 
+**FutureOn** for all its development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate. 
 
-You need to request a user to **FutureOn** before you can access it. Please contact olav@futureon.com for this requests.
+You need to request a user to **FutureOn** before you can access it. Please contact olav@futureon.com for this request.
 
-It also run a private docker registry, which you will get access to with your user when created.
+It also runs a private docker registry, which you will get access to with your user when created.
 
 ### KPD
 
@@ -71,30 +71,35 @@ We are sharing **TOC** with another company **Skalar** which have also develops 
 - A server running on your computer, that make a bridge between target **Kubernetes** cluster and whoever communicate with it ( **VSCode plugin** for example )
 - A service running on the target **Kubernetes** cluster to allow easy syncing of your local files to the different *service* of your deployment.
 
-The very basic functionality is to be able to sync file on a running **POD**. Which make development against a cluster a lot easier, as if you us **nodemon** ( or **vue serve** ) for example, every time you save a file, it will be sync on the **POD** that hold the **service**, the application within these **POD** will get rebuild, mimicking the way you would do development locally.
+The very basic functionality is to be able to sync file on a running **POD**. Which make development against a cluster a lot easier, as if you use **nodemon** ( or **vue serve** ) for example, every time you save a file, it will be sync on the **POD** that hold the **service**, the application within these **POD** will get rebuild, mimicking the way you would do development locally.
 
 #### KPD Configuration
 
-This also mean that you need to configure a file `kpd.yaml` to describe the link between the different services running on the target cluster and the local files you have. 
+This also mean that you need to configure a file `kpd.yaml` to describe the link between the different services running on the target cluster and the local files you have.
 
 #### KPD Installation
 
-1. Server component, at the base root of this template, execute `npm install`, this will install everything needed to run `KPD` server, locally to the folder. 
-2. VSCode plugin, is a bit trickier, as it needs to be installed globally. As some point it will be published to VS code extension repository, but for now : `npm install -g @skalar/kpd-vscode`
+1. Create or edit a `.npmrc` file containing the npm registry URL and authentication token for the **Skalar** registry. This is currently private. Please contact olav@futureon.com for this request.
+2. Server component, at the base root of this template, execute `npm install`, this will install everything needed to run `KPD` server, locally to the folder.
+3. VSCode plugin, is a bit trickier, as it needs to be installed globally. As some point it will be published to VS code extension repository, but for now : `npm install -g @skalar/kpd-vscode` then in VS Code go to the Extensions view and choose _Install from VSIX_ from the actions menu.
 
 #### KPD Run
 
-To run `kpd`, from the root of the folders, **AFTER** settings the environment variables, run `npx kpd`. If everything goes well, it should start to output log. At this point, the file are syncing on **TOC **.
+To run `kpd`, from the root of the folders, **AFTER** settings the environment variables, run `npx kpd`. If everything goes well, it should start to output log. At this point, the file are syncing on **TOC**.
 
-## HELM chart
+## HELM Chart
 
 The **HELM** chart for the project can be found in `helm/integration`. **HELM** is basically a template processor for **Kubernetes**, with a notion of *instance* in plus which make it easier to deploy whole application.
 
 For each service ( web service ) that you create, you need to create three file :
-* `{service}-deployement.yaml`, which describe how the web service is deploy.
+* `{service}-deployment.yaml`, which describe how the web service is deploy.
 * `{service}-ingress.yaml`, which describe the ingress(es) of the web service.
-* `{service}-service.yaml`, which connect the ingress(es) with the deployement.
+* `{service}-service.yaml`, which connect the ingress(es) with the deployment.
 
 There is also `_helper.tpl` that allows to define common *template* to be use in charts ( everything that start  with `{{template }}`)
 
-And finally `values.yaml` which se the default values used everywhere in the charts ( everything that starts with `.Values` )
+And finally `values.yaml` which sets the default values used everywhere in the charts ( everything that starts with `.Values` )
+
+## Deployed Integration
+
+After running `devops.sh deploy`, run `devops.sh status` to show the host names that the deployed integration is mapped to.
