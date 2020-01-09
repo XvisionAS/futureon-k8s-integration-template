@@ -36,9 +36,10 @@ For using `.envrc`, just type `source .envrc` before launching `kpd`.
 
 ## First Deploy
 
-Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables. 
+Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables.
 
-The script is named `devops.sh`.
+The script is named `devops.sh`. It requires bash v4 or later, which on Mac OS
+requires installing a newer version of bash.
 
 Commands are :
 
@@ -57,11 +58,11 @@ Building image and pushing images is only require when a dependency change ( eit
 
 ### Kubernetes Development cluster
 
-**FutureOn** for all is development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate. 
+**FutureOn** for all its development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate. 
 
 You need to request a user to **FutureOn** before you can access it. Please contact olav@futureon.com for this request.
 
-It also run a private docker registry, which you will get access to with your user when created.
+It also runs a private docker registry, which you will get access to with your user when created.
 
 ### KPD
 
@@ -81,7 +82,7 @@ This also mean that you need to configure a file `kpd.yaml` to describe the link
 
 1. Create or edit a `.npmrc` file containing the npm registry URL and authentication token for the **Skalar** registry. This is currently private. Please contact olav@futureon.com for this request.
 2. Server component, at the base root of this template, execute `npm install`, this will install everything needed to run `KPD` server, locally to the folder.
-3. VSCode plugin, is a bit trickier, as it needs to be installed globally. As some point it will be published to VS code extension repository, but for now : `npm install -g @skalar/kpd-vscode`
+3. VSCode plugin, is a bit trickier, as it needs to be installed globally. As some point it will be published to VS code extension repository, but for now : `npm install -g @skalar/kpd-vscode` then in VS Code go to the Extensions view and choose _Install from VSIX_ from the actions menu.
 
 #### KPD Run
 
@@ -99,3 +100,8 @@ For each service ( web service ) that you create, you need to create three file 
 There is also `_helper.tpl` that allows to define common *template* to be use in charts ( everything that start  with `{{template }}`)
 
 And finally `values.yaml` which sets the default values used everywhere in the charts ( everything that starts with `.Values` )
+
+## Deployed integration
+
+After running `devops.sh deploy`, run `devops.sh status` to show the host names
+that the deployed integration is mapped to.
