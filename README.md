@@ -18,6 +18,17 @@ Before you start, it is important that you read a bit about **Docker**, **Kubern
 * HELM: https://helm.sh/docs/
 * Docker: https://docs.docker.com/engine/docker-overview/
 
+### Mac OS
+
+Mac OS ships with some tools that needs to be updated before the `devops.sh` and `kpd` tools (described below) can be used. The easiest way of doing this is with MacPorts.
+
+Upgrade bash: `sudo port install bash`  
+Upgrade rsync: `sudo port install rsync`  
+Install watchman: `sudo port install watchman`  
+Create the `md5sum` utility: `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`
+
+MacPorts installs its tools in the non-standard location `/opt/local/bin/` so that Mac OS's own versions are not overwritten. You need to ensure that `/opt/local/bin/` is present at the beginning of your `PATH` so that the newer tools are found first.
+
 ## Environment Variables
 
 Here is a list of environment variables that are needed to use either **KPD** or **devops.sh** scripts :
@@ -38,7 +49,7 @@ For using `.envrc`, just type `source .envrc` before launching `kpd`.
 
 Bundled with the template, a small shell script make it easier to build, push and deploy to clusters. This script must be user **AFTER** settings the environment variables.
 
-The script is named `devops.sh`. It requires bash v4 or later, which on Mac OS requires installing a newer version of bash. On Mac OS you also need to create the `md5sum` utility by running `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`.
+The script is named `devops.sh`, it requires bash v4 or later.
 
 Commands are :
 

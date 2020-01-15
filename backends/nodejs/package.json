@@ -10,7 +10,7 @@
   "scripts": {
     "development": "nodemon",
     "start": "sleep 2; node --use-strict --max-http-header-size=32768 --max-old-space-size=2048 --inspect=0.0.0.0:9229 ./bin/www",
-    "production": "node --use-strict --max-http-header-size=32768 --max-old-space-size=2048 --inspect=0.0.0.0:9229 ./bin/www"
+    "production": "NODE_ENV=production node --use-strict --max-http-header-size=32768 --max-old-space-size=2048 --inspect=0.0.0.0:9229 ./bin/www"
   },
   "devDependencies": {
     "nodemon": "2.0.2"
