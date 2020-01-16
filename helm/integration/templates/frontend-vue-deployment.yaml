@@ -32,6 +32,8 @@ spec:
           env:
             - name: BACKEND
               value: http://{{ template "integration.backend.hostname" . }}
+            - name: ENV_TEST
+              value: example env var
           ports:
             - name: http
               containerPort: 80

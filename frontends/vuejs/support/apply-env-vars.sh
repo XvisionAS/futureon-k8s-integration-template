@@ -1,6 +1,7 @@
 #!/bin/bash
 
 substitutions=(
+	BACKEND
 	ENV_TEST
 )
 

@@ -2,7 +2,7 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <span>$ENV_TEST</span>
+    <span>ENV_TEST value is {{ this.$appConfig.envTest }}</span>
   </div>
 </template>
 
@@ -15,7 +15,6 @@ export default {
     HelloWorld
   }
 }
-
 </script>
 
 <style>
