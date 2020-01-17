@@ -1,8 +1,8 @@
 #!/bin/bash
 
 substitutions=(
-	BACKEND
-	ENV_TEST
+	VUE_APP_BACKEND
+	VUE_APP_ENV_TEST
 )
 
 uriencode()

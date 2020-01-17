@@ -5,7 +5,7 @@ export default function getConfig(selector) {
     if (document && document.querySelector) {
         const configEl = document.querySelector(selector);
         if (configEl) {
-            config = Object.freeze(JSON.parse(configEl.innerText));
+            config = Object.freeze(JSON.parse(configEl.textContent));
         }
     }
     return config;

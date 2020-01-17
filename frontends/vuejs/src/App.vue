@@ -2,7 +2,11 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <span>ENV_TEST value is {{ this.$appConfig.envTest }}</span>
+    <p>
+      NODE_ENV is {{ $appEnv.NODE_ENV }}<br>
+      VUE_APP_BACKEND is {{ $appEnv.VUE_APP_BACKEND }}<br>
+      VUE_APP_ENV_TEST is {{ $appEnv.VUE_APP_ENV_TEST }}
+    </p>
   </div>
 </template>
 
