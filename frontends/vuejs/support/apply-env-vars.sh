@@ -1,7 +1,13 @@
 #!/bin/bash
 
+# This file is not currently used, but can be invoked at runtime to substitute
+# the string "$VARNAME" in the file /app/dist/index.html for the value of the
+# environment variable with that name. The variable name must be defined in the
+# "substitutions" whitelist below.
+
 substitutions=(
-	ENV_TEST
+	VUE_APP_BACKEND
+	VUE_APP_ENV_TEST
 )
 
 uriencode()

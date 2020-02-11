@@ -7,15 +7,11 @@ COPY . .
 FROM base as development
 CMD npm run serve
 
-FROM base as build-stage
-RUN npm run build
-
-FROM nginx:stable-alpine as production
-RUN apk -U --no-cache add bash
+FROM base as production
+RUN apk -U --no-cache add bash nginx
+RUN mkdir /run/nginx
 COPY support/nginx.conf /etc/nginx/conf.d/default.conf
-COPY support/apply-env-vars.sh /
-
-COPY --from=build-stage /app/dist /app
+#COPY support/apply-env-vars.sh /
 
 EXPOSE 80
-CMD bin/bash -c "/apply-env-vars.sh && exec nginx -g 'daemon off;'"
+CMD /bin/bash -c "npm run build && exec nginx -g 'daemon off;'"
