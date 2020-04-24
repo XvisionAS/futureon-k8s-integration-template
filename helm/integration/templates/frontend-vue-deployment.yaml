@@ -30,8 +30,10 @@ spec:
           image: "{{ .Values.image.repository }}/{{.Values.frontendvue.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: BACKEND
+            - name: VUE_APP_BACKEND
               value: http://{{ template "integration.backend.hostname" . }}
+            - name: VUE_APP_ENV_TEST
+              value: "example env var"
           ports:
             - name: http
               containerPort: 80
