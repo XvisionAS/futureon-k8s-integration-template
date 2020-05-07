@@ -8,7 +8,7 @@ spec:
   type: {{ .Values.frontendvue.service.type }}
   ports:
     - port: {{ .Values.frontendvue.service.port }}
-      targetPort: http
+      targetPort: 80
       protocol: TCP
       name: http
   selector:

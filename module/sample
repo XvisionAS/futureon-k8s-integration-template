@@ -1,0 +1,26 @@
+#%Module1.0
+
+# custom host names
+
+setenv BACKEND_HOSTNAME 
+
+# devops.sh
+
+setenv BUILD_TARGET production
+setenv IMAGE_REGISTRY 
+setenv RELEASE sample
+setenv DEFAULT_DNS_DOMAIN 
+setenv KUBE_CONTEXT 
+setenv KUBE_NAMESPACE futureon-sample
+setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=$BACKEND_HOSTNAME --set imagePullSecrets=regcred"
+
+
+# CI setup
+
+setenv GITHUB_REPO 
+setenv BRANCH master
+setenv GITHUB_TOKEN 
+
+# FAM
+
+setenv SKIP_FAM true

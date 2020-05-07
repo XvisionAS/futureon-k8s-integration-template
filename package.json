@@ -1,19 +1,19 @@
 {
-	"name": "futureon-integration-sample",
-	"version": "1.0.0",
-	"private": true,
-	"description": "Root Repos",
-	"engines": {
-		"node": "~12.13.0"
-	},
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"@skalar/kpd-cli": "^1.1.0-alpha.0",
-		"@skalar/kpd-server": "~1.3.7-alpha.0"
-	},
-	"dependencies": {
-		"ts-node": "^8.5.4",
-		"typescript": "^3.7.3"
-	}
+  "name": "futureon-integration-sample",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root Repos",
+  "engines": {
+    "node": "~12.13.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@skalar/kpd-cli": "^1.1.0-alpha.0",
+    "@skalar/kpd-server": "~1.3.8-alpha.0"
+  },
+  "dependencies": {
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
+  }
 }

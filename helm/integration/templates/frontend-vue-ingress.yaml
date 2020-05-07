@@ -25,6 +25,9 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
+{{- else }}
+  tls:
+    - {}
 {{- end }}
   rules:
     - host: {{ template "integration.frontendvue.hostname" . }}
