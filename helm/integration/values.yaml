@@ -32,7 +32,7 @@ frontendvue:
     name: vuejs
   replicaCount: 1
   service:
-    type: NodePort
+    type: ClusterIP
     port: 80
   ingress:
     enabled: true
@@ -55,7 +55,7 @@ backend:
     name: nodejs
   replicaCount: 1
   service:
-    type: NodePort
+    type: ClusterIP
     port: 80
   ingress:
     enabled: true
