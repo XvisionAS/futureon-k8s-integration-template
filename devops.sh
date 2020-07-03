@@ -109,6 +109,16 @@ function imageRef() {
   echo "$IMAGE_REGISTRY/$1:$(imageTag)"
 }
 
+function copyRegCred() {
+  if [[ "$HELM_DEPLOY_PARAMS" =~ "regcred" ]]; then
+    credsRC=0
+    kubectl get secret regcred --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE || credsRC=$?
+    if [[ $credsRC -ne 0 ]]; then
+      kubectl get secret regcred --context $KUBE_CONTEXT --namespace=boilerplate --export -o yaml | kubectl apply --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE -f -
+    fi
+  fi
+}
+
 function _kubectl() {  
   kubectl \
     --namespace $KUBE_NAMESPACE \
@@ -121,8 +131,6 @@ function _helm() {
     --kube-context $KUBE_CONTEXT \
     ${@:1}
 }
-
-
 
 function serviceForward() {
   serviceName=$1
@@ -228,6 +236,7 @@ case "$1" in
   "deploy")
     # be sure to create namespace first
     kubectl --context $KUBE_CONTEXT create namespace $KUBE_NAMESPACE || true
+    copyRegCred
     helm upgrade \
       --kube-context $KUBE_CONTEXT \
       $RELEASE $chartPath \
