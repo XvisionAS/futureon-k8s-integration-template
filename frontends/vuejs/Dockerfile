@@ -1,7 +1,7 @@
 FROM node:lts-alpine as base
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --no-audit && npm cache clean --force
 COPY . .
 
 FROM base as development
@@ -17,5 +17,6 @@ COPY support/nginx.conf /etc/nginx/conf.d/default.conf
 RUN npm run build
 
 EXPOSE 80
+
 # This rebuild bakes in the VUE_APP env vars that are present in production
 CMD /bin/bash -c "npm run build && exec nginx -g 'daemon off;'"

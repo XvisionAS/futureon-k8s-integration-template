@@ -12,7 +12,8 @@ ENV NODE_PATH=/app
 
 RUN apk -U --no-cache add openssl \
   && apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
-  && npm install --no-audit --no-cache \
+  && npm install --no-audit \
+  && npm cache clean --force \
   && apk del --purge build
 
 COPY . .
@@ -28,7 +29,8 @@ ENV NODE_PATH=/app
 
 RUN apk -U --no-cache add openssl \
   && apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
-  && npm install --production --no-audit --no-cache \
+  && npm install --production --no-audit \
+  && npm cache clean --force \
   && apk del --purge build
 
 COPY . .
