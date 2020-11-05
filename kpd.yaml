@@ -6,15 +6,18 @@ instance: ${RELEASE}
 logLevel: debug
 
 kubernetes:
+  configPath: ${HOME}/.kube/config
   context: ${KUBE_CONTEXT}
   namespace: ${KUBE_NAMESPACE}
+  kpdNamespace: kpd-next
 
-x-node-debug: &nodeDebug
-  port: 9229
-  type: node
-  sourceMaps: true
-  restart: true
-  protocol: inspector
+stackManager:
+  type: "helm"
+  chartPath: helm/integration
+  #values:
+    # here you put value that we pass 
+    # mongodb.existingSecret: ${RELEASE}-mongodb
+    # region: ${REGION}
 
 # x-core-shared: &coreShared
 #   updepCommand: npm
@@ -28,64 +31,55 @@ x-node-debug: &nodeDebug
 #       containerPath: /core
 #       excludeDirs: [node_modules]
 
-
 # Docker image build config
-build:
-  buildArgs:
-    EXAMPLE_ENV: ${USER}
-    
+# build:
+#   # Where to store the build docker images
+#   bucket:
+#     # Credentials for bucket used for temporary build context storage
+#     secretName: ${USER}-${RELEASE}-fd-exporter-integration
+
+# Where to store the build docker images
+registry:
   # Where to store the build docker images
-  registry:
-    # Where to store the build docker images
-    url: registry.toc.systems
-    # Secret containing docker config with credentials to the image repository
-    secretName: regcred
-  bucket:
-    # Credentials for bucket used for temporary build context storage
-    secretName: ${USER}-${RELEASE}-jsonapi-sa
+  url: registry.toc.systems
+  # Secret containing docker config with credentials to the image repository
+  secretName: regcred
 
-
-  # List of images to build
-  images:
-    - name: nodejs
-      contextPath: backends/nodejs
-      target: development
-    - name: vuejs
-      contextPath: frontends/vuejs
-      target: development
-
-  # Kubernetes resource specification for build pods
-  resources:
-    requests: { cpu: '200m', memory: 1Gi }
-    limits: { cpu: '1', memory: 1Gi }
+# List of images to build
+images:
+  nodejs:
+    contextPath: backends/nodejs
+    target: development
+  vuejs:
+    contextPath: frontends/vuejs
+    target: development
+    #buildArgs:
+    #  CLOUD_TYPE: ${CLOUD_TYPE}
 
 # List of system components to interact with
 components:
-  - name: backend
+  backend:
     containers:
-      - name: backend
-        debug:
-          <<: *nodeDebug
-          localRoot: ${rootPath}/backends/nodejs
-          remoteRoot: /app
+      backend:
         sync:
           - localPath: backends/nodejs
             containerPath: /app
             excludeDirs: [node_modules]
-  - name: frontendvue
+        debug:
+          vscode: &vscodeNodeDebug
+            port: 9229
+            type: node
+            sourceMaps: true
+            restart: true
+            protocol: inspector
+            skipFiles:
+              - <node_internals>/**
+            localRoot: ${rootPath}/backends/nodejs
+            remoteRoot: /app
+  frontendvue:
     containers:
-      - name: frontendvue
+      frontendvue:
         sync:
           - localPath: frontends/vuejs
             containerPath: /app
             excludeDirs: [node_modules,tmp,dist]
-
-stackManager:
-  type: "helm"
-  config:
-    chartPath: helm/integration
-    #values:
-      # here you put value that we pass 
-      # mongodb.existingSecret: ${RELEASE}-mongodb
-      # region: ${REGION}
-    helmV3: true
