@@ -18,6 +18,14 @@ Before you start, it is important that you read a bit about **Docker**, **Kubern
 * HELM: https://helm.sh/docs/
 * Docker: https://docs.docker.com/engine/docker-overview/
 
+The following utilities need to be pre-installed:
+
+* Docker: https://www.docker.com/products/docker-desktop
+* kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl/
+* helm: https://helm.sh/docs/intro/install/
+* Google Cloud CLI (for deploying to TOC): https://cloud.google.com/sdk/docs/install
+* stern (for viewing logs): https://github.com/wercker/stern
+
 ### Mac OS
 
 Mac OS ships with some tools that needs to be updated before the `devops.sh` and `kpd` tools (described below) can be used. The easiest way of doing this is with MacPorts.
