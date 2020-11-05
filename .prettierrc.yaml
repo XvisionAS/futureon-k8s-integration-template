@@ -1,0 +1,8 @@
+############################
+# FutureOn settings
+############################
+tabWidth: 2
+semi: false
+printWidth: 90
+trailingComma: 'es5'
+singleQuote: true
