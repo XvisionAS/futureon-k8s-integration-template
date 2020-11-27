@@ -2,14 +2,14 @@
   "name": "futureon-integration-sample",
   "version": "1.0.0",
   "private": true,
-  "description": "Root Repos",
+  "description": "Integration sample",
   "engines": {
-    "node": "~12.13.0"
+    "node": "~14.15.0"
   },
   "author": "",
-  "license": "ISC",
+  "license": "",
   "devDependencies": {
-    "@skalar/kpd": "~2.4.1-alpha.0"
+    "@skalar/kpd": "~2.5.0"
   },
   "dependencies": {}
 }
