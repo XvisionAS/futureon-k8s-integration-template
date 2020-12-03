@@ -242,7 +242,7 @@ case "$1" in
       $RELEASE $chartPath \
       --install \
       --namespace $KUBE_NAMESPACE \
-      $configVals \
+      $HELM_DEPLOY_PARAMS \
       --set image.tag=$(imageTag) \
       --set image.repository=$IMAGE_REGISTRY \
       --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
