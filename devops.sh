@@ -110,11 +110,11 @@ function imageRef() {
 }
 
 function copyRegCred() {
-  if [[ ! "$HELM_DEPLOY_PARAMS" =~ "onpremise" ]]; then
+  if [[ ! -z "$IMAGE_PULL_SECRETS" ]]; then
     credsRC=0
-    kubectl get secret regcred --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE || credsRC=$?
+    kubectl get secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE || credsRC=$?
     if [[ $credsRC -ne 0 ]]; then
-      kubectl get secret regcred --context $KUBE_CONTEXT --namespace=boilerplate -o yaml | sed "s/namespace: boilerplate/namespace: $KUBE_NAMESPACE/g" | kubectl apply --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE -f -
+      kubectl get secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=boilerplate -o yaml | sed "s/namespace: boilerplate/namespace: $KUBE_NAMESPACE/g" | kubectl apply --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE -f -
     fi
   fi
 }

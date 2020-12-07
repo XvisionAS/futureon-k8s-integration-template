@@ -8,7 +8,8 @@ setenv RELEASE sample
 setenv DEFAULT_DNS_DOMAIN 
 setenv KUBE_CONTEXT 
 setenv KUBE_NAMESPACE futureon-sample
-setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=backend.domain.com --set cloudType=gcloud"
+setenv IMAGE_PULL_SECRETS regcred
+setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=backend.domain.com --set imagePullSecrets={regcred}"
 
 # CI setup
 
