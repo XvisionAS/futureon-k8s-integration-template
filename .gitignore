@@ -4,7 +4,9 @@ node_modules
 
 # local env files
 .env.local
+.envrc.local
 .env.*.local
+.envrc.*.local
 .npmrc
 
 # Log files
