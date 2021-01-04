@@ -153,7 +153,7 @@ function serviceExec() {
       -o jsonpath="{.items[0].metadata.name}"
   )
 
-  _kubectl exec -it $runningPod ${@:2}
+  _kubectl exec -it $runningPod -- ${@:2}
 }
 
 function toHelmArray() {
