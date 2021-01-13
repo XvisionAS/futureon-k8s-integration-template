@@ -6,6 +6,23 @@ module.exports = function (mod, event, options) {
     "nodejs"
   ]
   return {
+/*
+    Optional: skip build+deploy if all the git commit messages contain "nobuild"
+
+    start: "do-not-build-on-nobuild",
+    items: {
+      "do-not-build-on-nobuild": {
+        name: "Check if we want to build",
+        cmd: async function (pipeline, ci, config, step) {
+          const nobuild =
+            Array.isArray(event.commits) &&
+            event.commits.every(
+              (commit) => commit.message && commit.message.includes("nobuild")
+            )
+          step.success = nobuild ? undefined : "devops-build"
+        },
+      },
+*/
     start: "devops-build",
     items: {
       "devops-build": {
