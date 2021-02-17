@@ -10,8 +10,10 @@ setenv KUBE_CONTEXT
 setenv KUBE_NAMESPACE futureon-sample
 # For devops.sh
 setenv IMAGE_PULL_SECRETS regcred
-# For Helm
-setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=backend.domain.com --set imagePullSecrets\[0\].name=regcred"
+# For Helm - for "module load" in a shell - escape the brackets
+#setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=backend.domain.com --set imagePullSecrets\[0\].name=regcred"
+# For Helm - for buildbot - do not escape the brackets
+setenv HELM_DEPLOY_PARAMS "--set backend.backendHostname=backend.domain.com --set imagePullSecrets[0].name=regcred"
 
 # CI setup
 
