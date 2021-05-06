@@ -32,10 +32,6 @@ spec:
           env:
             - name: PORT
               value: "80"
-          resources:
-            requests:
-              memory: "40Mi"
-              cpu: "100m"  
           ports:
             - name: http
               containerPort: 80
