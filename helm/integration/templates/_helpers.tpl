@@ -83,7 +83,7 @@ Frontend VUE
 
 {{- define "integration.frontendvue.hostname" -}}
 {{- $defaultHostname := printf "%s.%s" (include "integration.frontendvue.fullname" .) .Values.defaultDnsDomain }}
-{{- default .Values.frontendvue.hostname $defaultHostname -}}
+{{- default $defaultHostname .Values.frontendvue.hostname -}}
 {{- end -}}
 
 {{/*
@@ -128,7 +128,7 @@ Backend VUE
 
 {{- define "integration.backend.hostname" -}}
 {{- $defaultHostname := printf "%s.%s" (include "integration.backend.fullname" .) .Values.defaultDnsDomain }}
-{{- default .Values.backend.hostname $defaultHostname -}}
+{{- default $defaultHostname .Values.backend.hostname -}}
 {{- end -}}
 
 
