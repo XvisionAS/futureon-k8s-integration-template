@@ -41,12 +41,13 @@ function usage() {
   echo 'deploy                                   Deploy helm chart'
   echo 'destroy                                  Destroy helm release'
   echo 'exec <service> <cmd> [arg…]              Run command inside service container'
+  echo 'forward <service> <port_src:port_dst>    Forward port from pods'
   echo 'logs [service]                           View logs with stern'
   echo 'pod <service>                            Describe a service pod'
+  echo 'printimagetag                            Shows the image tag that will get used by build'
   echo 'push [name]                              Push docker image(s)'
   echo 'restart <service>                        Restart (kill) pods for a given service'
   echo 'status                                   Show helm release status'
-  echo 'forward <service> <port_src:port_dst>    Forward port from pods'
   echo
 }
 
@@ -106,7 +107,7 @@ function imageRef() {
 
   : "${1?image name must be specified}"
 
-  echo "$IMAGE_REGISTRY/$1:$(imageTag)"
+  echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
 }
 
 function copyRegCred() {
@@ -185,6 +186,7 @@ case "$1" in
       popd
     done
     ;;
+
   "build"|"b")
     if [ -n "$2" ]; then
       BUILD_TARGET_IMAGE=$BUILD_TARGET
@@ -225,9 +227,11 @@ case "$1" in
       done
     fi
     ;;
+
   "clean")
     cleanJobs
     ;;
+
   "bush"|"bp")
     $0 build ${@:2}
     $0 push ${@:2}
@@ -244,7 +248,7 @@ case "$1" in
       --namespace $KUBE_NAMESPACE \
       $HELM_DEPLOY_PARAMS \
       --set image.tag=$(imageTag) \
-      --set image.repository=$IMAGE_REGISTRY \
+      --set image.repository=${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""} \
       --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
         ${@:2}
     ;;
@@ -326,10 +330,12 @@ case "$1" in
     helm get manifest $RELEASE --kube-context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE | kubectl get --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE -f -
     ;;
 
+  "printimagetag")
+    echo "$(imageTag)"
+    ;;
+
   *)
     usage
     exit 1
     ;;
 esac
-
-
