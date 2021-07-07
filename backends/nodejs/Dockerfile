@@ -1,5 +1,7 @@
 FROM node:lts-alpine as base
 
+RUN apk -U --no-cache add openssl vim
+
 RUN mkdir /app
 WORKDIR /app
 
@@ -10,8 +12,7 @@ FROM base as development
 COPY package.json package-lock.json ./
 ENV NODE_PATH=/app
 
-RUN apk -U --no-cache add openssl \
-  && apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
+RUN apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
   && npm install --no-audit \
   && npm cache clean --force \
   && apk del --purge build
@@ -27,8 +28,7 @@ FROM base as production
 COPY package.json package-lock.json ./
 ENV NODE_PATH=/app
 
-RUN apk -U --no-cache add openssl \
-  && apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
+RUN apk -U --no-cache add --virtual build git make gcc git g++ openssh-client python \
   && npm install --production --no-audit \
   && npm cache clean --force \
   && apk del --purge build
