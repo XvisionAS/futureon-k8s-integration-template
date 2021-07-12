@@ -12,7 +12,7 @@ It contains two servers :
 
 ## Before You Start
 
-Before you start, it is important that you read a bit about **Docker**, **Kubernetes** and **HELM**. 
+Before you start, it is important that you read a bit about **Docker**, **Kubernetes** and **HELM**.
 
 * Kubernetes: https://kubernetes.io/docs/concepts/
 * HELM: https://helm.sh/docs/
@@ -30,9 +30,9 @@ The following utilities need to be pre-installed:
 
 Mac OS ships with some tools that needs to be updated before the `devops.sh` and `kpd` tools (described below) can be used. The easiest way of doing this is with MacPorts.
 
-Upgrade bash: `sudo port install bash`  
-Upgrade rsync: `sudo port install rsync`  
-Install watchman: `sudo port install watchman`  
+Upgrade bash: `sudo port install bash`
+Upgrade rsync: `sudo port install rsync`
+Install watchman: `sudo port install watchman`
 Create the `md5sum` utility: `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`
 
 MacPorts installs its tools in the non-standard location `/opt/local/bin/` so that Mac OS's own versions are not overwritten. You need to ensure that `/opt/local/bin/` is present at the beginning of your `PATH` so that the newer tools are found first.
@@ -49,7 +49,8 @@ Here is a list of environment variables that are needed to use either **KPD** or
 | BUILD_TARGET       | Build target, defined in each **Dockerfile**. For this sample, only  `production`or `development` are valid. |
 | DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.toc.systems`. |
 | RELEASE            | HELM release name, also use for generating service URL.      |
-| IMAGE_PULL_SECRETS | Image pull secrets use to communicate with docker registry. If not set, imagePullSecrets will not be set on the chart. |
+| IMAGE_PULL_SECRETS | Image pull secrets use to communicate with docker registry. If not set, imagePullSecrets will not be set on the chart.
+
 You can find an example in `/.envrc`. You can also use `module` or any virtual env manager.
 For using `.envrc`, just type `source .envrc` before launching `kpd`.
 
@@ -76,7 +77,7 @@ Building image and pushing images is only require when a dependency change ( eit
 
 ### Kubernetes Development cluster
 
-**FutureOn** for all its development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate. 
+**FutureOn** for all its development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate.
 
 You need to request a user to **FutureOn** before you can access it. Please contact olav@futureon.com for this request.
 
