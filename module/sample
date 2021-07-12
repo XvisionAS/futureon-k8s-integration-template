@@ -3,6 +3,7 @@
 # devops.sh
 
 setenv BUILD_TARGET production
+setenv BUILD_NPM_RC 
 setenv IMAGE_REGISTRY 
 setenv RELEASE sample
 setenv DEFAULT_DNS_DOMAIN 

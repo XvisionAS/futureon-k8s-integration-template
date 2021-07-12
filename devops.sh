@@ -73,6 +73,7 @@ while getopts "rcn:" opt; do
 done
 
 export BUILD_TARGET=${BUILD_TARGET:-production}
+export DOCKER_BUILDKIT=1
 
 
 : "${RELEASE?must be specified}"
@@ -108,6 +109,12 @@ function imageRef() {
   : "${1?image name must be specified}"
 
   echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
+}
+
+function npmBuildSecret() {
+  if [ -n "$BUILD_NPM_RC" ]; then
+    echo "--secret id=npmrc,src=$BUILD_NPM_RC"
+  fi
 }
 
 function copyRegCred() {
@@ -202,6 +209,7 @@ case "$1" in
       # fi
       docker build \
         --target $BUILD_TARGET_IMAGE \
+        $(npmBuildSecret) \
         -t $(imageRef $2) \
         -f ${images[$2]}/${Dockerfiles[$2]} \
         ${images[$2]}
@@ -221,6 +229,7 @@ case "$1" in
         # fi
         docker build \
           --target $BUILD_TARGET_IMAGE \
+          $(npmBuildSecret) \
           -t $(imageRef $image) \
           -f ${images[$image]}/${Dockerfiles[$image]} \
           ${images[$image]}

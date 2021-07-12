@@ -47,6 +47,7 @@ Here is a list of environment variables that are needed to use either **KPD** or
 | KUBE_NAMESPACE     | Kubernetes namespace to use. For **TOC** : your user name.   |
 | IMAGE_REGISTRY     | Docker registry where to pull and push images. For **TOC** : |
 | BUILD_TARGET       | Build target, defined in each **Dockerfile**. For this sample, only  `production`or `development` are valid. |
+| BUILD_NPM_RC       | Optional path to a .npmrc file to provide as a secret to the Docker build |
 | DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.toc.systems`. |
 | RELEASE            | HELM release name, also use for generating service URL.      |
 | IMAGE_PULL_SECRETS | Image pull secrets use to communicate with docker registry. If not set, imagePullSecrets will not be set on the chart.
