@@ -27,7 +27,7 @@ spec:
         - name: {{ include "integration.frontendvue.name" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}/{{.Values.frontendvue.image.name}}:{{ .Values.image.tag }}"
+          image: {{ .Values.image.vuejs }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: VUE_APP_BACKEND
@@ -38,14 +38,6 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
           resources:
             {{- toYaml .Values.frontendvue.resources | nindent 12 }}
     #   {{- with .Values.nodeSelector }}

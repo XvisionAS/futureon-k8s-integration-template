@@ -86,29 +86,38 @@ function imageTag() {
     echo $TAG
   else
     case "$TAG_TYPE" in
-      "userbranch")
-        echo $(git rev-parse --abbrev-ref HEAD).$USER.$( git diff | md5sum | cut -f 1 -d ' ' ) | sed 's/[^a-zA-Z0-9\-]/\_/g'
-        ;;
-      *)
-        echo $(git rev-parse --abbrev-ref HEAD).$(git describe --always --abbrev=7 --dirty=".$USER-dirty").$BUILD_TARGET.$( git diff | md5sum | cut -f 1 -d ' ' ) | sed 's/[^a-zA-Z0-9\.\-]/\_/g'
-        ;;
+    "userbranch")
+      echo $(git rev-parse --abbrev-ref HEAD).$USER.$(git diff | md5sum | cut -f 1 -d ' ') | sed 's/[^a-zA-Z0-9\-]/\_/g'
+      ;;
+    *)
+      echo $(git rev-parse --abbrev-ref HEAD).$(git describe --always --abbrev=7 --dirty=".$USER-dirty").$BUILD_TARGET.$(git diff | md5sum | cut -f 1 -d ' ') | sed 's/[^a-zA-Z0-9\.\-]/\_/g'
+      ;;
     esac
   fi
 }
 
 function imageRef() {
-  if [ -z "$IMAGE_REGISTRY" ]; then
-    export IMAGE_REGISTRY=$(
-      kubectl get configmap boilerplate-config \
-        --context $KUBE_CONTEXT \
-        --namespace boilerplate \
-        -o 'jsonpath={.data.image\.registry}'
-    )
-  fi
 
   : "${1?image name must be specified}"
-
-  echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
+  # KPD "Generic" stack will provide an image ref for each
+  # defined component. Variable name will be IMAGE_ + componentName.toUpperCase()
+  local IMAGE_NAME="IMAGE_${1^^}"
+  IMAGE_NAME=${IMAGE_NAME//-/}
+  local IMAGE_REF=${!IMAGE_NAME}
+  
+  if [ -z "$IMAGE_REF" ]; then
+    if [ -z "$IMAGE_REGISTRY" ]; then
+      export IMAGE_REGISTRY=$(
+        kubectl get configmap boilerplate-config \
+          --context $KUBE_CONTEXT \
+          --namespace boilerplate \
+          -o 'jsonpath={.data.image\.registry}'
+      )
+    fi
+    echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
+  else
+    echo "${IMAGE_REF}"
+  fi
 }
 
 function npmBuildSecret() {
@@ -250,13 +259,19 @@ case "$1" in
     # be sure to create namespace first
     kubectl --context $KUBE_CONTEXT create namespace $KUBE_NAMESPACE || true
     copyRegCred
+    DOCKER_IMAGES=""
+    for image in "${!images[@]}"; do
+      imagename=${image//-/}
+      DOCKER_IMAGES+="   --set image.$imagename=$(imageRef $image) "
+    done
+    echo $DOCKER_IMAGES
     helm upgrade \
       --kube-context $KUBE_CONTEXT \
       $RELEASE $chartPath \
       --install \
       --namespace $KUBE_NAMESPACE \
       $HELM_DEPLOY_PARAMS \
-      --set image.tag=$(imageTag) \
+      $DOCKER_IMAGES \
       --set image.repository=${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""} \
       --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
         ${@:2}

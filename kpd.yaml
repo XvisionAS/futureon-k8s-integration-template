@@ -12,8 +12,14 @@ kubernetes:
   kpdNamespace: kpd-next
 
 stackManager:
-  type: "helm"
-  chartPath: helm/integration
+  type: 'shellScript'
+  scriptPath: devops.sh
+  destroyCommand: kpd-destroy
+  statusCommand: kpd-status
+  deployCommand: deploy
+  statusDeployed: 0
+  statusNotDeployed: 1
+  statusError: -1
   #values:
     # here you put value that we pass 
     # mongodb.existingSecret: ${RELEASE}-mongodb
