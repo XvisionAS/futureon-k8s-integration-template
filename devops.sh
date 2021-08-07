@@ -51,7 +51,6 @@ function usage() {
   echo
 }
 
-
 unamestr=$(uname)
 
 if [[ "$unamestr" == 'Darwin' ]]; then
@@ -64,22 +63,20 @@ cd $projectRoot
 
 # Parse config args
 while getopts "rcn:" opt; do
-    case $opt in
-    r) export RELEASE=$OPTARG ;;
-    c) export KUBE_CONTEXT=$OPTARG ;;
-    n) export KUBE_NAMESPACE=$OPTARG ;;
-    \?) exit 1;; # Invalid argument
-    esac
+  case $opt in
+  r) export RELEASE=$OPTARG ;;
+  c) export KUBE_CONTEXT=$OPTARG ;;
+  n) export KUBE_NAMESPACE=$OPTARG ;;
+  \?) exit 1 ;; # Invalid argument
+  esac
 done
 
 export BUILD_TARGET=${BUILD_TARGET:-production}
 export DOCKER_BUILDKIT=1
 
-
 : "${RELEASE?must be specified}"
 : "${KUBE_CONTEXT?must be specified}"
 : "${KUBE_NAMESPACE?must be specified}"
-
 
 function imageTag() {
   if [ -n "$TAG" ]; then
@@ -104,7 +101,7 @@ function imageRef() {
   local IMAGE_NAME="IMAGE_${1^^}"
   IMAGE_NAME=${IMAGE_NAME//-/}
   local IMAGE_REF=${!IMAGE_NAME}
-  
+
   if [ -z "$IMAGE_REF" ]; then
     if [ -z "$IMAGE_REGISTRY" ]; then
       export IMAGE_REGISTRY=$(
@@ -136,7 +133,7 @@ function copyRegCred() {
   fi
 }
 
-function _kubectl() {  
+function _kubectl() {
   kubectl \
     --namespace $KUBE_NAMESPACE \
     --context $KUBE_CONTEXT \
@@ -179,187 +176,202 @@ function toHelmArray() {
   local i
   local ret
   ret=" "
-  for (( i=0; i<${#lines[@]}; i++ )) ; do
+  for ((i = 0; i < ${#lines[@]}; i++)); do
     ret+=" --set $name[$i]=${lines[$i]}"
   done
   echo $ret
 }
 
-
 case "$1" in
-  "licences"|"l")
-    npm install -g license-checker npm-check-licenses
-    for image in "${!images[@]}"; do
-      pushd ${images[$image]}
-      echo "*******************************************************************"
-      echo "Licences for $image"
-      echo "*******************************************************************"
-      license-checker
-      echo "*******************************************************************"
-      echo "List of licences we need to check"
-      echo "*******************************************************************"
-      ncl
-      popd
-    done
-    ;;
+"licences" | "l")
+  npm install -g license-checker npm-check-licenses
+  for image in "${!images[@]}"; do
+    pushd ${images[$image]}
+    echo "*******************************************************************"
+    echo "Licences for $image"
+    echo "*******************************************************************"
+    license-checker
+    echo "*******************************************************************"
+    echo "List of licences we need to check"
+    echo "*******************************************************************"
+    ncl
+    popd
+  done
+  ;;
 
-  "build"|"b")
-    if [ -n "$2" ]; then
+"build" | "b")
+  if [ -n "$2" ]; then
+    BUILD_TARGET_IMAGE=$BUILD_TARGET
+    echo "############### Build $2 ##########"
+    # if [ "$2" == "converter" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    # if [ "$2" == "mongodb-backup" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    # if [ "$2" == "activities-importer" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    docker build \
+      --target $BUILD_TARGET_IMAGE \
+      $(npmBuildSecret) \
+      -t $(imageRef $2) \
+      -f ${images[$2]}/${Dockerfiles[$2]} \
+      ${images[$2]}
+  else
+    for image in "${!images[@]}"; do
       BUILD_TARGET_IMAGE=$BUILD_TARGET
-      echo "############### Build $2 ##########"
-      # if [ "$2" == "converter" ]; then
+      echo "############### Build $image ##########"
+
+      # if [ "$image" == "converter" ]; then
       #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
       # fi
-      # if [ "$2" == "mongodb-backup" ]; then
+      # if [ "$image" == "mongodb-backup" ]; then
       #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
       # fi
-      # if [ "$2" == "activities-importer" ]; then
+      # if [ "$image" == "activities-importer" ]; then
       #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
       # fi
       docker build \
         --target $BUILD_TARGET_IMAGE \
         $(npmBuildSecret) \
-        -t $(imageRef $2) \
-        -f ${images[$2]}/${Dockerfiles[$2]} \
-        ${images[$2]}
-    else
-      for image in "${!images[@]}"; do
-        BUILD_TARGET_IMAGE=$BUILD_TARGET
-        echo "############### Build $image ##########"
-
-        # if [ "$image" == "converter" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        # if [ "$image" == "mongodb-backup" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        # if [ "$image" == "activities-importer" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        docker build \
-          --target $BUILD_TARGET_IMAGE \
-          $(npmBuildSecret) \
-          -t $(imageRef $image) \
-          -f ${images[$image]}/${Dockerfiles[$image]} \
-          ${images[$image]}
-      done
-    fi
-    ;;
-
-  "clean")
-    cleanJobs
-    ;;
-
-  "bush"|"bp")
-    $0 build ${@:2}
-    $0 push ${@:2}
-    ;;
-
-  "deploy")
-    # be sure to create namespace first
-    kubectl --context $KUBE_CONTEXT create namespace $KUBE_NAMESPACE || true
-    copyRegCred
-    DOCKER_IMAGES=""
-    for image in "${!images[@]}"; do
-      imagename=${image//-/}
-      DOCKER_IMAGES+="   --set image.$imagename=$(imageRef $image) "
+        -t $(imageRef $image) \
+        -f ${images[$image]}/${Dockerfiles[$image]} \
+        ${images[$image]}
     done
-    echo $DOCKER_IMAGES
-    helm upgrade \
-      --kube-context $KUBE_CONTEXT \
-      $RELEASE $chartPath \
-      --install \
-      --namespace $KUBE_NAMESPACE \
-      $HELM_DEPLOY_PARAMS \
-      $DOCKER_IMAGES \
-      --set image.repository=${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""} \
-      --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
-        ${@:2}
-    ;;
+  fi
+  ;;
 
-  "destroy")
-    echo "Are you sure you want to destroy the release $RELEASE"
-    select result in Yes No
-    do
+"clean")
+  cleanJobs
+  ;;
+
+"bush" | "bp")
+  $0 build ${@:2}
+  $0 push ${@:2}
+  ;;
+
+"deploy")
+  # be sure to create namespace first
+  kubectl --context $KUBE_CONTEXT create namespace $KUBE_NAMESPACE || true
+  copyRegCred
+  DOCKER_IMAGES=""
+  for image in "${!images[@]}"; do
+    imagename=${image//-/}
+    DOCKER_IMAGES+="   --set image.$imagename=$(imageRef $image) "
+  done
+  echo $DOCKER_IMAGES
+  helm upgrade \
+    --kube-context $KUBE_CONTEXT \
+    $RELEASE $chartPath \
+    --install \
+    --namespace $KUBE_NAMESPACE \
+    $HELM_DEPLOY_PARAMS \
+    $DOCKER_IMAGES \
+    --set image.repository=${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""} \
+    --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
+    ${@:2}
+  ;;
+"kpd-destroy")
+  _helm delete $RELEASE -n $KUBE_NAMESPACE ${@:2}
+  ;;
+
+"destroy")
+  echo "Are you sure you want to destroy the release $RELEASE"
+  select result in Yes No; do
     if [ "$result" = "No" ]; then
       exit 0
     fi
     break
+  done
+  _helm delete $RELEASE ${@:2} --namespace $KUBE_NAMESPACE
+  ;;
+
+"exec" | "e")
+  serviceExec ${@:2}
+  ;;
+
+"forward" | "f")
+  serviceForward ${@:2}
+  ;;
+
+"kubectl" | "k")
+  _kubectl ${@:2}
+  ;;
+
+"logs")
+  if [ -n "$2" ]; then
+    selector="app.kubernetes.io/name=$2,app.kubernetes.io/instance=$RELEASE"
+  else
+    selector="app.kubernetes.io/instance=$RELEASE"
+  fi
+  stern \
+    --context $KUBE_CONTEXT \
+    --namespace $KUBE_NAMESPACE \
+    --selector $selector \
+    --template '{{color .ContainerColor .ContainerName}} {{.Message}}' \
+    ${@:3}
+  ;;
+
+"pod")
+  if [ -n "$2" ]; then
+    selector="app.kubernetes.io/name=$2,app.kubernetes.io/instance=$RELEASE"
+  else
+    selector="app.kubernetes.io/instance=$RELEASE"
+  fi
+
+  _kubectl describe pod --selector $selector ${@:3}
+  ;;
+
+"push" | "p")
+  if [ -n "$2" ]; then
+    echo "######## Push $2 #########"
+    docker push $(imageRef $2)
+  else
+    for image in "${!images[@]}"; do
+      echo "######## Push $image #########"
+      docker push $(imageRef $image)
     done
-    _helm delete $RELEASE ${@:2} --namespace $KUBE_NAMESPACE
+  fi
+  ;;
+
+"restart" | "r" | "kill")
+  if [ -n "$2" ]; then
+    toRestart=${@:2}
+  else
+    toRestart=${!images[@]}
+  fi
+  for serviceName in $toRestart; do
+    echo "Restarting $serviceName"
+    _kubectl delete pod --selector app.kubernetes.io/name=$serviceName,app.kubernetes.io/instance=$RELEASE --ignore-not-found=true
+  done
+  ;;
+"kpd-status")
+  KPD_STATUS=$(helm status --kube-context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE $RELEASE -o json | jq .info.status -r)
+  echo "Status $KPD_STATUS"
+  case "$KPD_STATUS" in
+  "deployed")
+    exit 0
     ;;
-
-  "exec"|"e")
-    serviceExec ${@:2}
-    ;;
-
-  "forward"|"f")
-    serviceForward ${@:2}
-    ;;
-
-  "kubectl"|"k")
-    _kubectl ${@:2}
-    ;;
-
-  "logs")
-    if [ -n "$2" ]; then
-      selector="app.kubernetes.io/name=$2,app.kubernetes.io/instance=$RELEASE"
-    else
-      selector="app.kubernetes.io/instance=$RELEASE"
-    fi
-    stern \
-      --context $KUBE_CONTEXT \
-      --namespace $KUBE_NAMESPACE \
-      --selector $selector \
-      --template '{{color .ContainerColor .ContainerName}} {{.Message}}' \
-      ${@:3}
-    ;;
-
-  "pod")
-    if [ -n "$2" ]; then
-      selector="app.kubernetes.io/name=$2,app.kubernetes.io/instance=$RELEASE"
-    else
-      selector="app.kubernetes.io/instance=$RELEASE"
-    fi
-
-    _kubectl describe pod --selector $selector ${@:3}
-    ;;
-
-  "push"|"p")
-    if [ -n "$2" ]; then
-      echo "######## Push $2 #########"
-      docker push $(imageRef $2)
-    else
-      for image in "${!images[@]}"; do
-        echo "######## Push $image #########"
-        docker push $(imageRef $image)
-      done
-    fi
-    ;;
-
-  "restart"|"r"|"kill")
-    if [ -n "$2" ]; then
-      toRestart=${@:2}
-    else
-      toRestart=${!images[@]}
-    fi
-    for serviceName in $toRestart
-    do
-      echo "Restarting $serviceName"
-      _kubectl delete pod --selector app.kubernetes.io/name=$serviceName,app.kubernetes.io/instance=$RELEASE  --ignore-not-found=true
-    done
-    ;;
-
-  "status"|"s")
-    helm get manifest $RELEASE --kube-context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE | kubectl get --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE -f -
-    ;;
-
-  "printimagetag")
-    echo "$(imageTag)"
-    ;;
-
-  *)
-    usage
+  "uninstalled")
     exit 1
     ;;
+  *)
+    exit -1
+    ;;
+  esac
+  ;;
+
+"status" | "s")
+  helm get manifest $RELEASE --kube-context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE | kubectl get --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE -f -
+  ;;
+
+"printimagetag")
+  echo "$(imageTag)"
+  ;;
+
+*)
+  usage
+  exit 1
+  ;;
 esac
