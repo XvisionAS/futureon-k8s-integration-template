@@ -268,7 +268,6 @@ case "$1" in
     --namespace $KUBE_NAMESPACE \
     $HELM_DEPLOY_PARAMS \
     $DOCKER_IMAGES \
-    --set image.repository=${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""} \
     --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
     ${@:2}
   ;;
