@@ -1,11 +1,9 @@
 const logger       = require('morgan')
-const bodyParser   = require('body-parser')
 const cors         = require('cors')
 const express      = require('express')
 const compression  = require('compression')
 
 const app = express()
-
 
 const shouldCompress = (req, res) => {
   if (req.headers['x-no-compression']) {
@@ -28,14 +26,12 @@ app.use('/ready', function(req, res, next) {
   res.json({ ready:true }).end()
 })
 
-
 app.disable('x-powered-by')
 
 app.use(logger('dev'))
-app.use(bodyParser.json({ limit: '150mb' }))
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json({ limit: '50mb' }))
+app.use(express.urlencoded({ extended: true }))
 app.use(cors({ origin: true, credentials: true }))
-
 
 app.use('/*', function(req, res, next) {
   return res.status(200).send(`
