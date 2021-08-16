@@ -7,6 +7,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  {{- with .Values.frontendvue.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
 {{- if .Values.frontendvue.ingress.tls }}
   tls:
