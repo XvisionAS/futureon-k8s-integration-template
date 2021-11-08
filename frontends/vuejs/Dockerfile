@@ -9,7 +9,7 @@ CMD npm run serve
 
 FROM base as production
 RUN apk -U --no-cache add bash nginx
-RUN mkdir /run/nginx
+RUN mkdir -p /run/nginx
 COPY support/nginx.conf /etc/nginx/conf.d/default.conf
 #COPY support/apply-env-vars.sh /
 
