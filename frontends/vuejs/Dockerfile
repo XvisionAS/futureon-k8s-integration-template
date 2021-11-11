@@ -1,4 +1,5 @@
-FROM node:lts-alpine as base
+FROM node:16-alpine3.14 as base
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --no-audit && npm cache clean --force
@@ -9,8 +10,7 @@ CMD npm run serve
 
 FROM base as production
 RUN apk -U --no-cache add bash nginx
-RUN mkdir -p /run/nginx
-COPY support/nginx.conf /etc/nginx/conf.d/default.conf
+COPY support/nginx.conf /etc/nginx/http.d/default.conf
 #COPY support/apply-env-vars.sh /
 
 # This build ensures that the Vue app compiles before the image can be deployed
