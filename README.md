@@ -63,8 +63,8 @@ The script is named `devops.sh`, it requires bash v4 or later.
 
 Commands are :
 
-* `./devops.sh build` will build all the docker image of the project.
-* `./devops.sh push` will push all the docker image to the target registry ( defined in ENV variables ).
+* `./devops.sh build` will build all the docker images of the project.
+* `./devops.sh push` will push all the docker images to the target registry ( defined in ENV variables ).
 * `./devops.sh bush` do build then push.
 * `./devops.sh deploy` will deploy the charts.
 
@@ -73,6 +73,18 @@ While working with this template to create you own integration, you might need t
 Do not hesitate to look at it and modify it if needed.
 
 Building image and pushing images is only require when a dependency change ( either in `Dockerfile`, or for example in one of `package.json`).
+
+### Developing with the Apple M1 or ARM CPU
+
+The `./devops.sh build` command currently includes the build parameter:
+
+* `--platform x86_64`
+
+so that the built images will run on TOC (see below) or on the default hardware at
+GCP / AWS / Azure.
+
+To run the built images on your local Mac/PC edit the `devops.sh` script to remove
+this or to control it with an environment variable.
 
 ## Checklist
 
