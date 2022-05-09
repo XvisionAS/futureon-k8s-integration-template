@@ -27,7 +27,7 @@ spec:
         - name: {{ include "integration.frontendvue.name" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.image.vuejs }}
+          image: "{{ .Values.image.registry }}/{{ .Values.frontendvue.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: VUE_APP_BACKEND

@@ -27,7 +27,7 @@ spec:
         - name: {{ include "integration.backend.name" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: {{ .Values.image.nodejs }}
+          image: "{{ .Values.image.registry }}/{{ .Values.backend.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: PORT

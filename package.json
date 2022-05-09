@@ -2,14 +2,16 @@
   "name": "futureon-integration-sample",
   "version": "1.0.0",
   "private": true,
-  "description": "Integration sample",
-  "engines": {
-    "node": "~14.15.0"
-  },
-  "author": "",
   "license": "",
-  "devDependencies": {
-    "@skalar/kpd": "~2.5.0"
+  "description": "Integration sample",
+  "author": "",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": "~16.15.0"
   },
-  "dependencies": {}
+  "scripts": {
+    "tilt": "echo \"Starting tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt up --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE",
+    "tilt-down": "echo \"Stopping tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt down --context $KUBE_CONTEXT"
+  }
 }

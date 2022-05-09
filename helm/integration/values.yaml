@@ -3,10 +3,9 @@
 # Declare variables to be passed into your templates.
 
 image:
+  registry: registry.toc.systems
+  tag: latest
   pullPolicy: IfNotPresent
-  # Image names will be set by devops.sh
-  vuejs: ""
-  nodejs: ""
 
 imagePullSecrets: []
 
@@ -29,6 +28,8 @@ securityContext: {}
   # runAsUser: 1000
 
 frontendvue:
+  image:
+    name: vuejs
   replicaCount: 1
   service:
     type: ClusterIP
@@ -50,6 +51,8 @@ frontendvue:
   affinity: {}
 
 backend:
+  image:
+    name: nodejs
   replicaCount: 1
   service:
     type: ClusterIP

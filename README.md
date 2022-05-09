@@ -25,21 +25,20 @@ The following utilities need to be pre-installed:
 * helm: https://helm.sh/docs/intro/install/
 * Google Cloud CLI (for deploying to TOC): https://cloud.google.com/sdk/docs/install
 * stern (for viewing logs): https://github.com/wercker/stern
+* Tilt: https://tilt.dev/
 
 ### Mac OS
 
-Mac OS ships with some tools that needs to be updated before the `devops.sh` and `kpd` tools (described below) can be used. The easiest way of doing this is with MacPorts.
+Mac OS ships with some tools that needs to be updated before the `devops.sh` script (described below) can be used. The easiest way of doing this is with MacPorts.
 
 Upgrade bash: `sudo port install bash`
-Upgrade rsync: `sudo port install rsync`
-Install watchman: `sudo port install watchman`
 Create the `md5sum` utility: `sudo ln -s /sbin/md5 /usr/local/bin/md5sum`
 
 MacPorts installs its tools in the non-standard location `/opt/local/bin/` so that Mac OS's own versions are not overwritten. You need to ensure that `/opt/local/bin/` is present at the beginning of your `PATH` so that the newer tools are found first.
 
 ## Environment Variables
 
-Here is a list of environment variables that are needed to use either **KPD** or **devops.sh** scripts :
+Here is a list of environment variables that are needed to use either **Tilt** or the **devops.sh** script:
 
 | Environment Name   | Description                                                  |
 | ------------------ | ------------------------------------------------------------ |
@@ -49,11 +48,11 @@ Here is a list of environment variables that are needed to use either **KPD** or
 | BUILD_TARGET       | Build target, defined in each **Dockerfile**. For this sample, only  `production`or `development` are valid. |
 | BUILD_NPM_RC       | Optional path to a .npmrc file to provide as a secret to the Docker build |
 | DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.toc.systems`. |
-| RELEASE            | HELM release name, also use for generating service URL.      |
+| RELEASE            | Helm release name, also used for generating service URL.      |
 | IMAGE_PULL_SECRETS | Image pull secrets use to communicate with docker registry. If not set, imagePullSecrets will not be set on the chart.
 
 You can find an example in `/.envrc`. You can also use `module` or any virtual env manager.
-For using `.envrc`, just type `source .envrc` before launching `kpd`.
+For using `.envrc`, just type `source .envrc` before launching `tilt`.
 
 ## First Deploy
 
@@ -96,29 +95,40 @@ You need to request a user to **FutureOn** before you can access it. Please cont
 
 It also runs a private docker registry, which you will get access to with your user when created.
 
-### KPD
+### Tilt
 
-We are sharing **TOC** with another company **Skalar** which have also develops tools to work easily within the cluster. This set of tools is called **KPD** and consists of :
+Tilt allows you to develop locally while running your code remotely on TOC.
 
-- A **VSCode plugin**, that allows to easily debug, see logs, build images, and deploy.
-- A server running on your computer, that make a bridge between target **Kubernetes** cluster and whoever communicate with it ( **VSCode plugin** for example )
-- A service running on the target **Kubernetes** cluster to allow easy syncing of your local files to the different *service* of your deployment.
+Tilt builds the required docker images, pushes them to TOC, deploys them with Helm (as pods on Kubernetes),
+and syncs your local code changes to the remote pods. Ensure your `BUILD_TARGET` is set to `development` so that
+file watching and hot reloading is enabled in the remote pods.
 
-The very basic functionality is to be able to sync file on a running **POD**. Which make development against a cluster a lot easier, as if you use **nodemon** ( or **vue serve** ) for example, every time you save a file, it will be sync on the **POD** that hold the **service**, the application within these **POD** will get rebuild, mimicking the way you would do development locally.
+#### Tilt Configuration
 
-#### KPD Configuration
+Configure a file `Tiltfile` to describe the link between the local files you have and the different services running on the target cluster.
 
-This also mean that you need to configure a file `kpd.yaml` to describe the link between the different services running on the target cluster and the local files you have.
+#### Tilt Run
 
-#### KPD Installation
+Use the terminal to load the environment variables and start Tilt:
 
-1. Create or edit a `.npmrc` file containing the npm registry URL and authentication token for the **Skalar** registry. This is currently private. Please contact olav@futureon.com for this request.
-2. Server component, at the base root of this template, execute `npm install`, this will install everything needed to run `KPD` server, locally to the folder.
-3. VSCode plugin, is a bit trickier, as it needs to be installed globally. As some point it will be published to VS code extension repository, but for now : `npm install -g @skalar/kpd-vscode` then in VS Code go to the Extensions view and choose _Install from VSIX_ from the actions menu.
+```
+source .envrc
+npm run tilt
+```
 
-#### KPD Run
+Press `s` to see the Tilt output and also the remote service output which is captured and relayed back to you.
 
-To run `kpd`, from the root of the folders, **AFTER** settings the environment variables, run `npx kpd`. If everything goes well, it should start to output log. At this point, the file are syncing on **TOC**.
+#### Tilt Stop
+
+The remotely deployed services will continue to run after you exit Tilt. If you are finished with
+the resources on the remote cluster you can undeploy the services and free up the resources with:
+
+```
+source .envrc
+npm run tilt-down
+```
+
+Note that if your services include a database, **the data will be lost**.
 
 ## HELM Chart
 

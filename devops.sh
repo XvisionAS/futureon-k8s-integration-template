@@ -7,15 +7,18 @@ export RELEASE=${RELEASE:-$USER-integration}
 
 chartPath="helm/integration"
 
+frontEndImage="vuejs"
+backEndImage="nodejs"
+
 declare -A images
 
-images["vuejs"]="frontends/vuejs"
-images["nodejs"]="backends/nodejs"
+images[$frontEndImage]="frontends/vuejs"
+images[$backEndImage]="backends/nodejs"
 
 declare -A Dockerfiles
 
-Dockerfiles["vuejs"]="Dockerfile"
-Dockerfiles["nodejs"]="Dockerfile"
+Dockerfiles[$frontEndImage]="Dockerfile"
+Dockerfiles[$backEndImage]="Dockerfile"
 
 function usage() {
   c=$(basename $0)
@@ -96,8 +99,8 @@ function imageTag() {
 function imageRef() {
 
   : "${1?image name must be specified}"
-  # KPD "Generic" stack will provide an image ref for each
-  # defined component. Variable name will be IMAGE_ + componentName.toUpperCase()
+  # Provide an image ref for each defined component.
+  # Variable name will be IMAGE_ + componentName.toUpperCase()
   local IMAGE_NAME="IMAGE_${1^^}"
   IMAGE_NAME=${IMAGE_NAME//-/}
   local IMAGE_REF=${!IMAGE_NAME}
@@ -260,7 +263,7 @@ case "$1" in
   DOCKER_IMAGES=""
   for image in "${!images[@]}"; do
     imagename=${image//-/}
-    DOCKER_IMAGES+="   --set image.$imagename=$(imageRef $image) "
+    DOCKER_IMAGES+=" --set image.$imagename=$(imageRef $image) "
   done
   echo $DOCKER_IMAGES
   helm upgrade \
@@ -270,11 +273,9 @@ case "$1" in
     --namespace $KUBE_NAMESPACE \
     $HELM_DEPLOY_PARAMS \
     $DOCKER_IMAGES \
+    --set image.registry=$IMAGE_REGISTRY \
     --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
     ${@:2}
-  ;;
-"kpd-destroy")
-  _helm delete $RELEASE -n $KUBE_NAMESPACE ${@:2}
   ;;
 
 "destroy")
@@ -346,21 +347,6 @@ case "$1" in
     echo "Restarting $serviceName"
     _kubectl delete pod --selector app.kubernetes.io/name=$serviceName,app.kubernetes.io/instance=$RELEASE --ignore-not-found=true
   done
-  ;;
-"kpd-status")
-  KPD_STATUS=$(helm status --kube-context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE $RELEASE -o json | jq .info.status -r)
-  echo "Status $KPD_STATUS"
-  case "$KPD_STATUS" in
-  "deployed")
-    exit 0
-    ;;
-  "uninstalled")
-    exit 1
-    ;;
-  *)
-    exit -1
-    ;;
-  esac
   ;;
 
 "status" | "s")
