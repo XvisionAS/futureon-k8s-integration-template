@@ -52,6 +52,8 @@ frontends = [
 
 has_mongo_db = False
 
+helm_dir = 'helm/integration'
+
 # -----------------------------------------------------------------------------
 # Helm values to append to HELM_DEPLOY_PARAMS
 # -----------------------------------------------------------------------------
@@ -99,19 +101,18 @@ if has_mongo_db:
 
 HELM_SET_LIST = [val.strip() for val in HELM_SET_LIST if val.strip() != ""]
 
-versionJson = decode_json(
+version_json = decode_json(
     local("kubectl version -o json --short=true --context %s" % KUBE_CONTEXT)
 )
-serverVersion = "%s.%s" % (
-    versionJson["serverVersion"]["major"], versionJson["serverVersion"]["minor"]
+server_version = "%s.%s" % (
+    version_json["serverVersion"]["major"], version_json["serverVersion"]["minor"]
 )
-print("* Using k8s server version %s" % serverVersion)
 
 templated_yaml = helm(
-    "helm/integration",
+    helm_dir,
     name=RELEASE,
     namespace=KUBE_NAMESPACE,
     set=HELM_SET_LIST,
-    kube_version=serverVersion
+    kube_version=server_version
 )
 k8s_yaml(templated_yaml)
