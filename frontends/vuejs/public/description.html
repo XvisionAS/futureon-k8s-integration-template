@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+    This template is taken from the modules in FT Design / public.
+    It expects description.jpg to be fixed width 542px.
+-->
+<html>
+  <head>
+    <style lang="css">
+      :root {
+        --gray-accent-one: rgba(61, 70, 77, 1);
+        --gray-accent-three: rgb(86, 86, 86);
+        --text-accent-one: white;
+        --ftw-border-color-accent-one: var(--gray-accent-three);
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+          'Helvetica Neue', sans-serif;
+        background-color: var(--gray-accent-one);
+        color: var(--text-accent-one);
+      }
+      .inner {
+        display: inline-flex;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 4px;
+        border: 1px solid var(--ftw-border-color-accent-one);
+        padding: 8px;
+      }
+      p {
+        align-content: center;
+        margin: 1em;
+      }
+      .outer {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+      <div class="inner">
+        <img src="description.jpg" />
+        <p>
+          A description of the integration goes here.
+          <br><br>
+          Integrations are activated with a Pro or Pro Design user license.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
