@@ -8,7 +8,7 @@
   "devDependencies": {},
   "dependencies": {},
   "engines": {
-    "node": "~16.15.0"
+    "node": "~16"
   },
   "scripts": {
     "tilt": "echo \"Starting tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt up --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE",
