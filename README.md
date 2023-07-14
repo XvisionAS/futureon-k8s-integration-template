@@ -77,7 +77,7 @@ Building image and pushing images is only require when a dependency change ( eit
 
 The `./devops.sh build` command currently includes the build parameter:
 
-* `--platform x86_64`
+* `--platform linux/x86_64`
 
 so that the built images will run on TOC (see below) or on the default hardware at
 GCP / AWS / Azure.

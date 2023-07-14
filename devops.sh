@@ -216,7 +216,7 @@ case "$1" in
     #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
     # fi
     docker build \
-      --platform x86_64 \
+      --platform linux/x86_64 \
       --target $BUILD_TARGET_IMAGE \
       $(npmBuildSecret) \
       -t $(imageRef $2) \
@@ -237,7 +237,7 @@ case "$1" in
       #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
       # fi
       docker build \
-        --platform x86_64 \
+        --platform linux/x86_64 \
         --target $BUILD_TARGET_IMAGE \
         $(npmBuildSecret) \
         -t $(imageRef $image) \

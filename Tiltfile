@@ -21,7 +21,7 @@ HELM_SET_STRING = os.environ.get('HELM_DEPLOY_PARAMS', '')
 HELM_SET_LIST = HELM_SET_STRING.split('--set ')
 
 DOCKER_BUILD_TARGET = os.environ.get('BUILD_TARGET', 'development')
-DOCKER_BUILD_PLATFORM = 'x86_64'
+DOCKER_BUILD_PLATFORM = 'linux/x86_64'
 DOCKER_BUILD_NPMRC =  os.environ.get('BUILD_NPM_RC', '')
 DOCKER_BUILD_SECRETS = (
     ('id=npmrc,src=%s' % DOCKER_BUILD_NPMRC) if DOCKER_BUILD_NPMRC != '' else None
