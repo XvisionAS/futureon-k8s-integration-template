@@ -22,7 +22,10 @@ HELM_SET_LIST = HELM_SET_STRING.split('--set ')
 
 DOCKER_BUILD_TARGET = os.environ.get('BUILD_TARGET', 'development')
 DOCKER_BUILD_PLATFORM = 'x86_64'
-DOCKER_BUILD_SECRETS = 'id=npmrc,src=%s' % os.environ.get('BUILD_NPM_RC', '~/.npmrc')
+DOCKER_BUILD_NPMRC =  os.environ.get('BUILD_NPM_RC', '')
+DOCKER_BUILD_SECRETS = (
+    ('id=npmrc,src=%s' % DOCKER_BUILD_NPMRC) if DOCKER_BUILD_NPMRC != '' else None
+)
 DOCKER_BUILD_ARGS = {
     'CLOUD_TYPE': CLOUD_TYPE,
 }
