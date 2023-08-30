@@ -311,7 +311,7 @@ case "$1" in
     --context $KUBE_CONTEXT \
     --namespace $KUBE_NAMESPACE \
     --selector $selector \
-    --template '{{color .ContainerColor .ContainerName}} {{.Message}}' \
+    --template '{{color .ContainerColor .ContainerName}} {{.Message}}{{"\n"}}' \
     ${@:3}
   ;;
 
