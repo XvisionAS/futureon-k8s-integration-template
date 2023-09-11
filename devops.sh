@@ -97,27 +97,8 @@ function imageTag() {
 }
 
 function imageRef() {
-
   : "${1?image name must be specified}"
-  # Provide an image ref for each defined component.
-  # Variable name will be IMAGE_ + componentName.toUpperCase()
-  local IMAGE_NAME="IMAGE_${1^^}"
-  IMAGE_NAME=${IMAGE_NAME//-/}
-  local IMAGE_REF=${!IMAGE_NAME}
-
-  if [ -z "$IMAGE_REF" ]; then
-    if [ -z "$IMAGE_REGISTRY" ]; then
-      export IMAGE_REGISTRY=$(
-        kubectl get configmap boilerplate-config \
-          --context $KUBE_CONTEXT \
-          --namespace boilerplate \
-          -o 'jsonpath={.data.image\.registry}'
-      )
-    fi
-    echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
-  else
-    echo "${IMAGE_REF}"
-  fi
+  echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
 }
 
 function npmBuildSecret() {
