@@ -12,6 +12,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+{{ if not .Values.noenforcehttps }}
 {{- if .Values.frontendvue.ingress.tls }}
   tls:
   {{- range .Values.frontendvue.ingress.tls }}
@@ -25,6 +26,8 @@ spec:
   tls:
     - {}
 {{- end }}
+{{- end }}
+
   rules:
     - host: {{ template "integration.frontendvue.hostname" . }}
       http:

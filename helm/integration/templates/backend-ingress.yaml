@@ -12,6 +12,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+{{ if not .Values.noenforcehttps }}
 {{- if .Values.backend.ingress.tls }}
   tls:
   {{- range .Values.backend.ingress.tls }}
@@ -24,6 +25,7 @@ spec:
 {{- else }}
   tls:
     - {}
+{{- end }}
 {{- end }}
   rules:
     - host: {{ template "integration.backend.hostname" . }}

@@ -21,7 +21,7 @@ HELM_SET_STRING = os.environ.get('HELM_DEPLOY_PARAMS', '')
 HELM_SET_LIST = HELM_SET_STRING.split('--set ')
 
 DOCKER_BUILD_TARGET = os.environ.get('BUILD_TARGET', 'development')
-DOCKER_BUILD_PLATFORM = 'linux/x86_64'
+DOCKER_BUILD_PLATFORM = 'x86_64'
 DOCKER_BUILD_NPMRC =  os.environ.get('BUILD_NPM_RC', '')
 DOCKER_BUILD_SECRETS = (
     ('id=npmrc,src=%s' % DOCKER_BUILD_NPMRC) if DOCKER_BUILD_NPMRC != '' else None
@@ -31,6 +31,7 @@ DOCKER_BUILD_ARGS = {
 }
 
 allow_k8s_contexts(KUBE_CONTEXT)
+print("Image registry: %s" % IMAGE_REGISTRY)
 default_registry(IMAGE_REGISTRY)
 
 # -----------------------------------------------------------------------------
@@ -71,6 +72,8 @@ def register_js_app(entry, labels=""):
     source_dir = entry["source_dir"]
     helm_name = entry["service_name"]
     image_name = entry["image_name"]
+    local_port = entry.get("local_port", 0)
+    container_port = entry.get("container_port", 0)
 
     full_image_name = "%s/%s" % (IMAGE_REGISTRY, image_name)
     docker_build(
@@ -87,7 +90,10 @@ def register_js_app(entry, labels=""):
                 trigger=['%s/package.json' % source_dir, '%s/package-lock.json' % source_dir]),
         ]
     )
-    k8s_resource("%s-%s" % (RELEASE, helm_name), labels=labels)
+    if local_port != 0 and container_port != 0:
+      k8s_resource("%s-%s" % (RELEASE, helm_name), port_forwards=["%s:%s" % (local_port, container_port)], labels=labels)
+    else:
+      k8s_resource("%s-%s" % (RELEASE, helm_name), labels=labels)
 
 [register_js_app(entry, labels="integration-backends")
     for entry in nodejs_backends]
@@ -105,7 +111,7 @@ if has_mongo_db:
 HELM_SET_LIST = [val.strip() for val in HELM_SET_LIST if val.strip() != ""]
 
 version_json = decode_json(
-    local("kubectl version -o json --short=true --context %s" % KUBE_CONTEXT)
+    local("kubectl version -o json --context %s" % KUBE_CONTEXT)
 )
 server_version = "%s.%s" % (
     version_json["serverVersion"]["major"], version_json["serverVersion"]["minor"]
