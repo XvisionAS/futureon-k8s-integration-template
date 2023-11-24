@@ -43,11 +43,11 @@ Here is a list of environment variables that are needed to use either **Tilt** o
 | Environment Name   | Description                                                  |
 | ------------------ | ------------------------------------------------------------ |
 | KUBE_CONTEXT       | Kubernetes context to use. This is defined in you kube config, which should be located on linux at `~/.kube/config`. To get a list of them : `kubectl config get-contexts` |
-| KUBE_NAMESPACE     | Kubernetes namespace to use. For **TOC** : your user name.   |
-| IMAGE_REGISTRY     | Docker registry where to pull and push images. For **TOC** : |
+| KUBE_NAMESPACE     | Kubernetes namespace to use. For **TOC**: your user name.   |
+| IMAGE_REGISTRY     | Docker registry where to pull and push images. For **TOC**: images.futureon-dev.fieldtwin.com |
 | BUILD_TARGET       | Build target, defined in each **Dockerfile**. For this sample, only  `production`or `development` are valid. |
 | BUILD_NPM_RC       | Optional path to a .npmrc file to provide as a secret to the Docker build |
-| DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.toc.systems`. |
+| DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then,  each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.futureon-dev.fieldtwin.com`. |
 | RELEASE            | Helm release name, also used for generating service URL.      |
 | IMAGE_PULL_SECRETS | Image pull secrets use to communicate with docker registry. If not set, imagePullSecrets will not be set on the chart.
 
@@ -89,11 +89,19 @@ this or to control it with an environment variable.
 
 ### Kubernetes Development cluster
 
-**FutureOn** for all its development uses an on premise **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup  with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate.
+**FutureOn** for all its development uses a Google Cloud **Kubernetes** cluster. This cluster, called **TOC** ( The Office Cluster ) is setup with everything you need to define services and ingress, that, if setup correctly, will also set **HTTPS** certificate.
 
-You need to request a user to **FutureOn** before you can access it. Please contact olav@futureon.com for this request.
+You need to request a service account key file to **FutureOn** before you can access it. Please contact olav@futureon.com for this request.
 
 It also runs a private docker registry, which you will get access to with your user when created.
+
+In order to access the cluster with the service account key file, the following commands can be used:
+* `gcloud auth activate-service-account --project=futureon-internal-it --key-file=<SERVICE_ACCOUNT_KEY_FILE>`
+
+#gcloud auth activate-service-account --project=futureon-internal-it --key-file=<SERVICE_ACCOUNT_KEY_FILE>
+#export KUBECONFIG=tocgcp.yaml
+#gcloud container clusters get-credentials dev --zone europe-north1-a --project futureon-internal-it
+#kubectl get po -A
 
 ### Tilt
 
