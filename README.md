@@ -24,7 +24,7 @@ The following utilities need to be pre-installed:
 * kubectl: https://kubernetes.io/docs/tasks/tools/install-kubectl/
 * helm: https://helm.sh/docs/intro/install/
 * Google Cloud CLI (for deploying to TOC): https://cloud.google.com/sdk/docs/install
-* stern (for viewing logs): https://github.com/wercker/stern
+* stern (for viewing logs): https://github.com/stern/stern
 * Tilt: https://tilt.dev/
 
 ### Mac OS
