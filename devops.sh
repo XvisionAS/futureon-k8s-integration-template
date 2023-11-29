@@ -241,19 +241,13 @@ case "$1" in
   # be sure to create namespace first
   kubectl --context $KUBE_CONTEXT create namespace $KUBE_NAMESPACE || true
   copyRegCred
-  DOCKER_IMAGES=""
-  for image in "${!images[@]}"; do
-    imagename=${image//-/}
-    DOCKER_IMAGES+=" --set image.$imagename=$(imageRef $image) "
-  done
-  echo $DOCKER_IMAGES
   helm upgrade \
     --kube-context $KUBE_CONTEXT \
     $RELEASE $chartPath \
     --install \
     --namespace $KUBE_NAMESPACE \
     $HELM_DEPLOY_PARAMS \
-    $DOCKER_IMAGES \
+    --set image.tag=$(imageTag) \
     --set image.registry=$IMAGE_REGISTRY \
     --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
     ${@:2}
