@@ -98,7 +98,9 @@ It also runs a private docker registry.
 In order to access the cluster with the service account key file, the following commands can be used:
 * `gcloud auth activate-service-account --project=futureon-internal-it --key-file=<SERVICE_ACCOUNT_KEY_FILE>`
 * `gcloud container clusters get-credentials dev --zone europe-north1-a --project futureon-internal-it`
+
 Then, load your module file, or run `source .envrc`. Make sure all the the variables of either file are correctly set to the development cluster, as show above on section "Environment Variables".
+
 * `DOCKER_REPOSITORY="images.$DEFAULT_DNS_DOMAIN"`
 * `DOCKER_USERNAME="docker"`
 * `DOCKER_PASSWORD=$(kubectl --context $KUBE_CONTEXT --namespace boilerplate get secret docker-registry-plain-auth --output="jsonpath={.data.password}" | base64 --decode)`
