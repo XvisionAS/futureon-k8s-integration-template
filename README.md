@@ -99,6 +99,11 @@ In order to access the cluster with the service account key file, the following 
 * `gcloud auth activate-service-account --project=futureon-internal-it --key-file=<SERVICE_ACCOUNT_KEY_FILE>`
 * `export KUBECONFIG=tocgcp.yaml`
 * `gcloud container clusters get-credentials dev --zone europe-north1-a --project futureon-internal-it`
+* `DOCKER_REPOSITORY="images.$DEFAULT_DNS_DOMAIN"`
+* `DOCKER_USERNAME="docker"`
+* `DOCKER_PASSWORD=$(kubectl --context $KUBE_CONTEXT --namespace boilerplate get secret docker-registry-plain-auth --output="jsonpath={.data.password}" | base64 --decode)`
+* `docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" "$DOCKER_REPOSITORY"`
+
 
 You can then use kubectl to issue commands to the cluster. Lens/OpenLens is also a good IDE to manage k8s clusters.
 
