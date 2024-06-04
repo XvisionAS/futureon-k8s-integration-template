@@ -44,7 +44,7 @@ Here is a list of environment variables that are needed to use either **Tilt** o
 | ------------------ | ------------------------------------------------------------ |
 | KUBE_CONTEXT       | Kubernetes context to use. This is defined in you kube config, which should be located on linux at `~/.kube/config`. To get a list of them : `kubectl config get-contexts`. For **TOC**: `gke_futureon-internal-it_europe-north1-a_dev` |
 | KUBE_NAMESPACE     | Kubernetes namespace to use. For **TOC**: your user name.   |
-| IMAGE_REGISTRY     | Docker registry where to pull and push images. For **TOC**: `images.futureon-dev.fieldtwin.com` |
+| IMAGE_REGISTRY     | Docker registry where to pull and push images. For **TOC**: `europe-north1-docker.pkg.dev/futureon-internal-it/futureonregistryeurope-north1` |
 | BUILD_TARGET       | Build target, defined in each **Dockerfile**. For this sample, only `production`or `development` are valid. |
 | BUILD_NPM_RC       | Optional path to a .npmrc file to provide as a secret to the Docker build |
 | DEFAULT_DNS_DOMAIN | This contains the base DNS domains which service URL will be generated from. In this template, there is two services : `frontendvue` and `backend`. If `DEFAULT_DNS_DOMAIN` is set to *examples.com* then, each services ingress will be bound to `$RELEASE-{service name}.examples.com`. This also mean that your DNS needs to be set accordingly. On **TOC**, everything is taken care of, and certificate are generated to support `*.futureon-dev.fieldtwin.com`. For **TOC**: `futureon-dev.fieldtwin.com` |
