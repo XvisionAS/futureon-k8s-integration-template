@@ -109,11 +109,8 @@ function npmBuildSecret() {
 
 function copyRegCred() {
   if [[ ! -z "$IMAGE_PULL_SECRETS" ]]; then
-    credsRC=0
-    kubectl get secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE || credsRC=$?
-    if [[ $credsRC -ne 0 ]]; then
-      kubectl get secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=boilerplate -o yaml | sed "s/namespace: boilerplate/namespace: $KUBE_NAMESPACE/g" | kubectl apply --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE -f -
-    fi
+    kubectl delete secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE || true
+    kubectl get secret $IMAGE_PULL_SECRETS --context $KUBE_CONTEXT --namespace=boilerplate -o yaml | sed "s/namespace: boilerplate/namespace: $KUBE_NAMESPACE/g" | kubectl apply --context $KUBE_CONTEXT --namespace=$KUBE_NAMESPACE -f -
   fi
 }
 
