@@ -71,41 +71,41 @@ Frontend VUE
 *******************************************************************************
 */}}
 
-{{- define "integration.frontendvue.name" -}}
-{{- default "frontendvue" .Values.frontendvue.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- define "integration.frontendsvelte.name" -}}
+{{- default "frontendsvelte" .Values.frontendsvelte.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 
-{{- define "integration.frontendvue.fullname" -}}
-{{- $name := (include "integration.frontendvue.name" .) -}}
+{{- define "integration.frontendsvelte.fullname" -}}
+{{- $name := (include "integration.frontendsvelte.name" .) -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "integration.frontendvue.hostname" -}}
-{{- $defaultHostname := printf "%s.%s" (include "integration.frontendvue.fullname" .) .Values.defaultDnsDomain }}
-{{- default $defaultHostname .Values.frontendvue.hostname -}}
+{{- define "integration.frontendsvelte.hostname" -}}
+{{- $defaultHostname := printf "%s.%s" (include "integration.frontendsvelte.fullname" .) .Values.defaultDnsDomain }}
+{{- default $defaultHostname .Values.frontendsvelte.hostname -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "integration.frontendvue.labels" -}}
+{{- define "integration.frontendsvelte.labels" -}}
 helm.sh/chart: {{ include "integration.chart" . }}
-{{ include "integration.frontendvue.selectorLabels" . }}
+{{ include "integration.frontendsvelte.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
-app.kubernetes.io/name: {{ template "futureon.frontendvue.name" . }}
+app.kubernetes.io/name: {{ template "futureon.frontendsvelte.name" . }}
 
 
 
 {{/*
 Selector labels
 */}}
-{{- define "integration.frontendvue.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "integration.frontendvue.name" . }}
+{{- define "integration.frontendsvelte.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "integration.frontendsvelte.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 

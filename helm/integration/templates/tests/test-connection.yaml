@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "integration.frontendvue.fullname" . }}-test-connection"
+  name: "{{ include "integration.frontendsvelte.fullname" . }}-test-connection"
   labels:
-{{ include "integration.frontendvue.labels" . | nindent 4 }}
+{{ include "integration.frontendsvelte.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -11,7 +11,7 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args:  ['{{ include "integration.frontendvue.fullname" . }}:{{ .Values.frontendvue.service.port }}']
+      args:  ['{{ include "integration.frontendsvelte.fullname" . }}:{{ .Values.frontendsvelte.service.port }}']
   restartPolicy: Never
 
 ---

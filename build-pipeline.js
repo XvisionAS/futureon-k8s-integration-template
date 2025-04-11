@@ -2,7 +2,7 @@
 module.exports = function (mod, event, options) {
 
   const components = [
-    "vuejs",
+    "svelte",
     "nodejs"
   ]
   return {

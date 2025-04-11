@@ -48,9 +48,9 @@ nodejs_backends = [
 
 frontends = [
     {
-        'source_dir': './frontends/vuejs',       # Project directory to sync
-        'service_name': 'frontendvue',           # Service name in helm values.yaml
-        'image_name': 'vuejs'                    # Image name in devops.sh and values.yaml
+        'source_dir': './frontends/svelte',       # Project directory to sync
+        'service_name': 'frontendsvelte',         # Service name in helm values.yaml
+        'image_name': 'svelte'                    # Image name in devops.sh and values.yaml
     }
 ]
 

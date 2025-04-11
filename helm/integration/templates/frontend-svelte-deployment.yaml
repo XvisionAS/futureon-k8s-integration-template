@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "integration.frontendvue.fullname" . }}
+  name: {{ include "integration.frontendsvelte.fullname" . }}
   labels:
-    {{- include "integration.frontendvue.labels" . | nindent 4 }}
+    {{- include "integration.frontendsvelte.labels" . | nindent 4 }}
   annotations:
     timestamp: "{{ ((now).Unix) }}"
 spec:
-  replicas: {{ .Values.frontendvue.replicaCount }}
+  replicas: {{ .Values.frontendsvelte.replicaCount }}
   selector:
     matchLabels:
-      {{- include "integration.frontendvue.selectorLabels" . | nindent 6 }}
+      {{- include "integration.frontendsvelte.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "integration.frontendvue.selectorLabels" . | nindent 8 }}
+        {{- include "integration.frontendsvelte.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -24,10 +24,10 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "integration.frontendvue.name" . }}
+        - name: {{ include "integration.frontendsvelte.name" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.registry }}/{{ .Values.frontendvue.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.frontendsvelte.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: VUE_APP_BACKEND
@@ -39,7 +39,7 @@ spec:
               containerPort: 80
               protocol: TCP
           resources:
-            {{- toYaml .Values.frontendvue.resources | nindent 12 }}
+            {{- toYaml .Values.frontendsvelte.resources | nindent 12 }}
     #   {{- with .Values.nodeSelector }}
     #   nodeSelector:
     #     {{- toYaml . | nindent 8 }}

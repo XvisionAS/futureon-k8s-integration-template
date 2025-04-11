@@ -1,0 +1,34 @@
+#%Module1.0
+
+setenv KUBE_NAMESPACE fieldtwin-integration
+setenv BUILD_TARGET development
+setenv RELEASE "fieldtwin-integration"
+setenv LOGGING_LEVEL "debug"
+setenv SENTRY_DSN ""
+setenv KUBE_CONTEXT minikube
+setenv DEFAULT_DNS_DOMAIN lvh.me
+setenv IMAGE_REGISTRY img.lvh.me
+setenv CLOUD_TYPE "onpremise"
+setenv IMAGE_PULL_SECRETS "regkey"
+setenv CLUSTER_NAME dev
+setenv INSTANCE_ID dev
+setenv BUILD_NPM_RC "~/.npmrc"
+
+setenv FIELDAP_API_BASE_URL "http://futureon-backend.lvh.me"
+
+# Frontend vars
+setenv VITE_APP_BACKEND_URL "http://fieldtwin-integration-backend.lvh.me"
+setenv VITE_FIELDAP_API_BASE_URL "http://futureon-backend.lvh.me"
+
+# Any values --set in here will add/replace those in helm/values.yaml
+setenv HELM_DEPLOY_PARAMS {\
+  --set backend.appBackendURL=http://fieldtwin-integration-backend.lvh.me \
+  --set backend.backendHostname=http://futureon-backend.lvh.me \
+  --set backend.frontendHostname=lvh.me \
+  --set backend.sentryDSN= \
+  --set backend.apiToken=0be1387c-2246-4a41-bfa8-a1ef3f0083de \
+  --set backend.release=fieldtwin-integration \
+  --set frontenduser.isEvaluation=true \
+  --set cloudType=gcp \
+  --set noenforcehttps=true \
+  --set imagePullSecrets[0].name=regkey}

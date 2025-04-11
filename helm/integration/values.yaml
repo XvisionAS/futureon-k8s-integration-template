@@ -28,7 +28,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-frontendvue:
+frontendsvelte:
   image:
     name: vuejs
   replicaCount: 1

@@ -7,12 +7,12 @@ export RELEASE=${RELEASE:-$USER-integration}
 
 chartPath="helm/integration"
 
-frontEndImage="vuejs"
+frontEndImage="svelte"
 backEndImage="nodejs"
 
 declare -A images
 
-images[$frontEndImage]="frontends/vuejs"
+images[$frontEndImage]="frontends/svelte"
 images[$backEndImage]="backends/nodejs"
 
 declare -A Dockerfiles
