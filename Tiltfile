@@ -19,19 +19,19 @@ CLOUD_TYPE = os.environ.get('CLOUD_TYPE', 'onpremise')
 
 HELM_SET_STRING = os.environ.get('HELM_DEPLOY_PARAMS', '')
 HELM_SET_LIST = HELM_SET_STRING.split('--set ')
+HELM_SET_LIST.append('image.registry=%s' % IMAGE_REGISTRY)
 
 DOCKER_BUILD_TARGET = os.environ.get('BUILD_TARGET', 'development')
-DOCKER_BUILD_PLATFORM = 'x86_64'
-DOCKER_BUILD_NPMRC =  os.environ.get('BUILD_NPM_RC', '')
-DOCKER_BUILD_SECRETS = (
-    ('id=npmrc,src=%s' % DOCKER_BUILD_NPMRC) if DOCKER_BUILD_NPMRC != '' else None
-)
+DOCKER_BUILD_PLATFORM = 'linux/x86_64'
+DOCKER_BUILD_SECRETS = 'id=npmrc,src=%s' % os.environ.get('BUILD_NPM_RC', '~/.npmrc')
+GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
+
 DOCKER_BUILD_ARGS = {
     'CLOUD_TYPE': CLOUD_TYPE,
+    'GITHUB_TOKEN': GITHUB_TOKEN
 }
 
 allow_k8s_contexts(KUBE_CONTEXT)
-print("Image registry: %s" % IMAGE_REGISTRY)
 default_registry(IMAGE_REGISTRY)
 
 # -----------------------------------------------------------------------------
@@ -40,21 +40,19 @@ default_registry(IMAGE_REGISTRY)
 
 nodejs_backends = [
     {
-        'source_dir': './backends/nodejs',       # Project directory to sync
+        'source_dir': './backends/nodejs',       # Project directory
         'service_name': 'backend',               # Service name in helm values.yaml
-        'image_name': 'nodejs'                   # Image name in devops.sh and values.yaml
+        'image_name': 'fieldtwin-integration-backend'  # Image name in devops.sh and values.yaml
     }
 ]
 
 frontends = [
     {
-        'source_dir': './frontends/svelte',       # Project directory to sync
-        'service_name': 'frontendsvelte',         # Service name in helm values.yaml
-        'image_name': 'svelte'                    # Image name in devops.sh and values.yaml
+        'source_dir': './frontends/svelte',
+        'service_name': 'frontendsvelte',
+        'image_name': 'fieldtwin-integration-frontendsvelte'
     }
 ]
-
-has_mongo_db = False
 
 helm_dir = 'helm/integration'
 
@@ -63,6 +61,7 @@ helm_dir = 'helm/integration'
 # -----------------------------------------------------------------------------
 
 HELM_SET_LIST.append('defaultDnsDomain=%s' % DEFAULT_DNS_DOMAIN)
+HELM_SET_LIST.append('image.buildEnv=localDev')
 
 # -----------------------------------------------------------------------------
 # Tilt - image build, file sync and k8s service registration
@@ -72,8 +71,6 @@ def register_js_app(entry, labels=""):
     source_dir = entry["source_dir"]
     helm_name = entry["service_name"]
     image_name = entry["image_name"]
-    local_port = entry.get("local_port", 0)
-    container_port = entry.get("container_port", 0)
 
     full_image_name = "%s/%s" % (IMAGE_REGISTRY, image_name)
     docker_build(
@@ -90,19 +87,13 @@ def register_js_app(entry, labels=""):
                 trigger=['%s/package.json' % source_dir, '%s/package-lock.json' % source_dir]),
         ]
     )
-    if local_port != 0 and container_port != 0:
-      k8s_resource("%s-%s" % (RELEASE, helm_name), port_forwards=["%s:%s" % (local_port, container_port)], labels=labels)
-    else:
-      k8s_resource("%s-%s" % (RELEASE, helm_name), labels=labels)
+    k8s_resource("%s-%s" % (RELEASE, helm_name), labels=labels)
 
 [register_js_app(entry, labels="integration-backends")
     for entry in nodejs_backends]
 
 [register_js_app(entry, labels="integration-frontends")
     for entry in frontends]
-
-if has_mongo_db:
-    k8s_resource("%s-%s" % (RELEASE, "mongodb"), labels="integration-databases")
 
 # -----------------------------------------------------------------------------
 # Tilt - k8s deployment with helm

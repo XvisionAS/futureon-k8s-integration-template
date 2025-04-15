@@ -3,12 +3,14 @@
 # Declare variables to be passed into your templates.
 
 image:
-  # this will be set from IMAGE_REGISTRY
-  # registry: registry.toc.systems
+  registry: registry.toc.systems
   tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
+
+# toc, gcp, azure
+cloudType: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -30,7 +32,7 @@ securityContext: {}
 
 frontendsvelte:
   image:
-    name: vuejs
+    name: fieldtwin-integration-frontendsvelte
   replicaCount: 1
   service:
     type: ClusterIP
@@ -46,14 +48,15 @@ frontendsvelte:
   resources:
     requests:
       memory: "40Mi"
-      cpu: "100m"  
+      cpu: "20m"
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  isEvaluation: false  
 
 backend:
   image:
-    name: nodejs
+    name: fieldtwin-integration-backend
   replicaCount: 1
   service:
     type: ClusterIP
@@ -63,13 +66,20 @@ backend:
     annotations:
       # certmanager.k8s.io/cluster-issuer: "letsencrypt"
       kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    # hosts: []      
+    # hosts: []
     tls: []
   resources:
     requests:
       memory: "40Mi"
-      cpu: "100m"  
+      cpu: "20m"
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  # Default URL for logging to Sentry
+  sentryDSN: ""
+  # The FieldAP backend (of the integration backend)
+  backendHostname: set-me.fieldap.com
+  # The FieldAP front end (web app)
+  frontendHostname: set-me.fieldap.com
+  # Customise the backend logging level
+  loggingLevel: ""

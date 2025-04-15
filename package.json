@@ -11,7 +11,7 @@
     "node": "~16"
   },
   "scripts": {
-    "tilt": "echo \"Starting tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt up --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE",
+    "tilt": "echo \"Starting tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt up --context $KUBE_CONTEXT --namespace $KUBE_NAMESPACE --port=10351",
     "tilt-down": "echo \"Stopping tilt on $KUBE_CONTEXT, namespace $KUBE_NAMESPACE\" && tilt down --context $KUBE_CONTEXT"
   }
 }

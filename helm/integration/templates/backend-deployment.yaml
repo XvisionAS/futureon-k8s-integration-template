@@ -30,22 +30,40 @@ spec:
           image: "{{ .Values.image.registry }}/{{ .Values.backend.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: CLOUD_TYPE
+              value: "{{ .Values.cloudType }}"
             - name: PORT
               value: "80"
+            - name: VITE_APP_BACKEND_URL
+              value: "{{ .Values.backend.appBackendURL }}"              
+            - name: FIELDAP_API_BASE_URL
+              value: "{{ .Values.backend.backendHostname }}"
+            - name: LOGGING_LEVEL
+              value: "{{ .Values.backend.loggingLevel }}"
+            - name: SENTRY_DSN
+              value: "{{ .Values.backend.sentryDSN }}"
+            - name: K8S_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: K8S_POD_RELEASE
+              value: "{{ .Values.backend.release }}"
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.backend.resources | nindent 12 }}
+            periodSeconds: 30
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+    #     readinessProbe: # Not required - the backend is always ready if it is live
     #   {{- with .Values.nodeSelector }}
     #   nodeSelector:
     #     {{- toYaml . | nindent 8 }}

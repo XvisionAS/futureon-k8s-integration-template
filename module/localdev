@@ -26,7 +26,6 @@ setenv HELM_DEPLOY_PARAMS {\
   --set backend.backendHostname=http://futureon-backend.lvh.me \
   --set backend.frontendHostname=lvh.me \
   --set backend.sentryDSN= \
-  --set backend.apiToken=0be1387c-2246-4a41-bfa8-a1ef3f0083de \
   --set backend.release=fieldtwin-integration \
   --set frontenduser.isEvaluation=true \
   --set cloudType=gcp \

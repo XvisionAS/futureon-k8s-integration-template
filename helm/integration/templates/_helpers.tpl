@@ -1,7 +1,4 @@
-
-
 {{/* vim: set filetype=mustache: */}}
-
 
 {{/*
 *******************************************************************************
@@ -15,7 +12,6 @@ Create chart name and version as used by the chart label.
 {{- define "integration.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 
 {{/*
 Create the name of the service account to use
@@ -41,7 +37,6 @@ Create the name of the service account to use
 {{- end -}}
 {{- end -}}
 
-
 {{/*
 Expand the name of the chart.
 */}}
@@ -63,18 +58,15 @@ app.kubernetes.io/name: {{ include "integration.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-
-
 {{/*
 *******************************************************************************
-Frontend VUE
+Svelte Frontend
 *******************************************************************************
 */}}
 
 {{- define "integration.frontendsvelte.name" -}}
 {{- default "frontendsvelte" .Values.frontendsvelte.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 
 {{- define "integration.frontendsvelte.fullname" -}}
 {{- $name := (include "integration.frontendsvelte.name" .) -}}
@@ -99,8 +91,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 app.kubernetes.io/name: {{ template "futureon.frontendsvelte.name" . }}
 
-
-
 {{/*
 Selector labels
 */}}
@@ -112,14 +102,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{/*
 *******************************************************************************
-Backend VUE
+Backend
 *******************************************************************************
 */}}
 
 {{- define "integration.backend.name" -}}
 {{- default "backend" .Values.backend.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
 
 {{- define "integration.backend.fullname" -}}
 {{- $name := (include "integration.backend.name" .) -}}
@@ -130,7 +119,6 @@ Backend VUE
 {{- $defaultHostname := printf "%s.%s" (include "integration.backend.fullname" .) .Values.defaultDnsDomain }}
 {{- default $defaultHostname .Values.backend.hostname -}}
 {{- end -}}
-
 
 {{/*
 Common labels
@@ -144,8 +132,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 app.kubernetes.io/component: {{ template "futureon.backend.name" . }}
-
-
 
 {{/*
 Selector labels

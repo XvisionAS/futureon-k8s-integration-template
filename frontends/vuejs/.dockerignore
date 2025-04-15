@@ -1,6 +1,0 @@
-.DS_Store
-.env*
-.git
-.npmrc
-node_modules
-dist

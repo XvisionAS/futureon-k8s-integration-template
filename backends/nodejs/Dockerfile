@@ -1,6 +1,10 @@
-FROM node:18-alpine3.18 as base
+# syntax=docker/dockerfile:1.2
 
-RUN apk -U --no-cache add openssl vim
+FROM node:20.9.0-alpine3.18 as base
+
+RUN apk -U --no-cache add openssl bash vim postgresql-client python3 pkgconfig pixman-dev cairo-dev pango-dev build-base
+
+ENV GLIBC_VERSION 2.35-r1
 
 RUN mkdir /app
 WORKDIR /app
@@ -12,10 +16,9 @@ FROM base as development
 COPY package.json package-lock.json ./
 ENV NODE_PATH=/app
 
-RUN apk -U --no-cache add --virtual build git make gcc git g++ openssh-client \
-  && npm install --no-audit \
-  && npm cache clean --force \
-  && apk del --purge build
+RUN --mount=type=secret,id=npmrc,dst=/app/.npmrc \
+     npm install --no-audit \
+  && npm cache clean --force
 
 COPY . .
 
@@ -28,10 +31,9 @@ FROM base as production
 COPY package.json package-lock.json ./
 ENV NODE_PATH=/app
 
-RUN apk -U --no-cache add --virtual build git make gcc git g++ openssh-client \
-  && npm install --production --no-audit \
-  && npm cache clean --force \
-  && apk del --purge build
+RUN --mount=type=secret,id=npmrc,dst=/app/.npmrc \
+     npm install --production --no-audit \
+  && npm cache clean --force
 
 COPY . .
 

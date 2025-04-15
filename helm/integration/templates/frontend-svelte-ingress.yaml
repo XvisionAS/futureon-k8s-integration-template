@@ -11,8 +11,8 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+    nginx.org/websocket-services: {{ template "integration.frontendsvelte.fullname" . }}
 spec:
-{{ if not .Values.noenforcehttps }}
 {{- if .Values.frontendsvelte.ingress.tls }}
   tls:
   {{- range .Values.frontendsvelte.ingress.tls }}
@@ -22,12 +22,8 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-{{- else }}
-  tls:
-    - {}
-{{- end }}
-{{- end }}
 
+{{- end }}
   rules:
     - host: {{ template "integration.frontendsvelte.hostname" . }}
       http:
@@ -68,6 +64,7 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+    nginx.org/websocket-services: {{ template "integration.frontendsvelte.fullname" . }}
 spec:
 {{- if .Values.frontendsvelte.ingress.tls }}
   tls:
@@ -78,9 +75,6 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-{{- else }}
-  tls:
-    - {}
 {{- end }}
   rules:
     - host: {{ template "integration.frontendsvelte.hostname" . }}

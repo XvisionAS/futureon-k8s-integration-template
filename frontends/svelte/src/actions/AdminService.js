@@ -1,48 +1,15 @@
 import { DataService } from '@xvisionas/fetch-dataservice';
 
 class AdminService extends DataService {
-  async postPromptGuardSettings(data) {
-    const response = await this.httpPost(
-      `${this.backendURL}/admin/promptguardsettings`,
-      data
-    );
-    return response.json();
+  setProject(projectId, subProjectId) {
+    this.projectId = projectId;
+    const subProjectIdNoEvents = subProjectId.split(':')[0];
+    this.subProjectId = subProjectIdNoEvents;
   }
 
-  async getTools() {
+  async getDocuments() {
     const response = await this.httpGet(
-      `${this.backendURL}/admin/tools`
-    );
-    return response.json();
-  }
-
-  async postTools(data) {
-    const response = await this.httpPost(
-      `${this.backendURL}/admin/tools`,
-      data
-    );
-    return response.json();
-  }
-
-  async postPrompts(data) {
-    const response = await this.httpPost(
-      `${this.backendURL}/admin/prompts`,
-      data
-    );
-    return response.json();
-  }
-
-  async getModel() {
-    const response = await this.httpGet(
-      `${this.backendURL}/admin/model`
-    );
-    return response.json();
-  }
-
-  async postModel(data) {
-    const response = await this.httpPost(
-      `${this.backendURL}/admin/model`,
-      { ...data }
+      `${this.backendURL}/ui/${this.projectId}/${this.subProjectId}/documents`,
     );
     return response.json();
   }
