@@ -2,7 +2,7 @@
 
 FROM node:20.9.0-alpine3.18 as base
 
-RUN apk -U --no-cache add openssl bash vim postgresql-client python3 pkgconfig pixman-dev cairo-dev pango-dev build-base
+RUN apk -U --no-cache add openssl bash vim build-base
 
 ENV GLIBC_VERSION 2.35-r1
 

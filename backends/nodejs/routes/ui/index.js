@@ -1,6 +1,6 @@
 /**
  * @module server.routes.ext
- * Provides the intelligence external services.
+ * Provides the integration external services.
  */
 'use strict'
 

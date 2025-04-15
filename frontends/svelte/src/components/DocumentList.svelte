@@ -60,7 +60,7 @@
         </thead>
         <tbody>
           {#each documents as document (document.id)}
-            <tr>
+            <tr class="table-dark">
               <td>{getDocumentName(document)}</td>
               <td>{formatDate(document.created)}</td>
               <td>{document.creator}</td>
