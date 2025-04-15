@@ -120,12 +120,21 @@ file watching and hot reloading is enabled in the remote pods.
 
 Configure a file `Tiltfile` to describe the link between the local files you have and the different services running on the target cluster.
 
+### Environment Variables
+Load environment variables from `.envrc` or set them in your terminal or from module file.
+
+```
+module load ~/git/futureon-k8s-integration-template/module/localdev
+```
+or
+```
+source .envrc
+```
 #### Tilt Run
 
 Use the terminal to load the environment variables and start Tilt:
 
 ```
-source .envrc
 npm run tilt
 ```
 
