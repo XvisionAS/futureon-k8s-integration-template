@@ -89,7 +89,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
-app.kubernetes.io/name: {{ template "futureon.frontendsvelte.name" . }}
+app.kubernetes.io/name: {{ template "integration.frontendsvelte.name" . }}
 
 {{/*
 Selector labels
@@ -131,7 +131,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
-app.kubernetes.io/component: {{ template "futureon.backend.name" . }}
+app.kubernetes.io/component: {{ template "integration.backend.name" . }}
 
 {{/*
 Selector labels

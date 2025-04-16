@@ -41,7 +41,6 @@
       link.rel = 'stylesheet';
       link.href = url;
       document.head.appendChild(link);
-      console.log(`Loaded CSS: ${url}`);
     };
     
     // Load both stylesheets
@@ -51,7 +50,6 @@
 
   function onWindowMessage(msg) {
     if (!loaded && msg.data?.event === 'loaded') {
-      console.log('Message received:', msg)
       triggerLoad(msg.data.token, msg.data.project, msg.data.subProject)
       // Load CSS files if provided
       loadCSS(msg.data.cssUrl, msg.data.cssThemeUrl);
