@@ -46,7 +46,7 @@ frontendvue:
   resources:
     requests:
       memory: "40Mi"
-      cpu: "100m"  
+      cpu: "10m"  
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -69,7 +69,7 @@ backend:
   resources:
     requests:
       memory: "40Mi"
-      cpu: "100m"  
+      cpu: "10m"  
   nodeSelector: {}
   tolerations: []
   affinity: {}
