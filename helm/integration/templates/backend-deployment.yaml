@@ -8,6 +8,8 @@ metadata:
     timestamp: "{{ ((now).Unix) }}"
 spec:
   replicas: {{ .Values.backend.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "integration.backend.selectorLabels" . | nindent 6 }}

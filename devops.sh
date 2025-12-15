@@ -180,72 +180,52 @@ case "$1" in
   done
   ;;
 
-  "build" | "b")
-    if [ -n "$2" ]; then
+"build" | "b")
+  if [ -n "$2" ]; then
+    BUILD_TARGET_IMAGE=$BUILD_TARGET
+    echo "############### Build $2 ##########"
+    # if [ "$2" == "converter" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    # if [ "$2" == "mongodb-backup" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    # if [ "$2" == "activities-importer" ]; then
+    #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+    # fi
+    docker build \
+      --platform linux/x86_64 \
+      --target $BUILD_TARGET_IMAGE \
+      $(npmBuildSecret) \
+      -t $(imageRef $2) \
+      -f ${images[$2]}/${Dockerfiles[$2]} \
+      ${images[$2]}
+  else
+    for image in "${!images[@]}"; do
       BUILD_TARGET_IMAGE=$BUILD_TARGET
-      echo "############### Build $2 ##########"
-      # if [ "$2" == "converter" ]; then
-      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-      # fi
-      # if [ "$2" == "mongodb-backup" ]; then
-      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-      # fi
-      # if [ "$2" == "activities-importer" ]; then
-      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-      # fi
-      IMG_TAG=$(imageRef $2)
-      if docker image inspect "$IMG_TAG" >/dev/null 2>&1; then
-        echo "Image $IMG_TAG exists locally, skipping build."
-      else
-        if ! docker build \
-          --platform linux/x86_64 \
-          --target $BUILD_TARGET_IMAGE \
-          $(npmBuildSecret) \
-          -t "$IMG_TAG" \
-          -f ${images[$2]}/${Dockerfiles[$2]} \
-          ${images[$2]}; then
-          if docker image inspect "$IMG_TAG" >/dev/null 2>&1; then
-            echo "Build failed but image $IMG_TAG exists locally. Proceeding."
-          else
-            exit 1
-          fi
-        fi
-      fi
-    else
-      for image in "${!images[@]}"; do
-        BUILD_TARGET_IMAGE=$BUILD_TARGET
-        echo "############### Build $image ##########"
+      echo "############### Build $image ##########"
 
-        # if [ "$image" == "converter" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        # if [ "$image" == "mongodb-backup" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        # if [ "$image" == "activities-importer" ]; then
-        #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
-        # fi
-        IMG_TAG=$(imageRef $image)
-        if docker image inspect "$IMG_TAG" >/dev/null 2>&1; then
-          echo "Image $IMG_TAG exists locally, skipping build."
-        else
-          if ! docker build \
-            --platform linux/x86_64 \
-            --target $BUILD_TARGET_IMAGE \
-            $(npmBuildSecret) \
-            -t "$IMG_TAG" \
-            -f ${images[$image]}/${Dockerfiles[$image]} \
-            ${images[$image]}; then
-            if docker image inspect "$IMG_TAG" >/dev/null 2>&1; then
-              echo "Build failed but image $IMG_TAG exists locally. Proceeding."
-            else
-              exit 1
-            fi
-          fi
-        fi
-      done
-    fi
-    ;;"clean")
+      # if [ "$image" == "converter" ]; then
+      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+      # fi
+      # if [ "$image" == "mongodb-backup" ]; then
+      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+      # fi
+      # if [ "$image" == "activities-importer" ]; then
+      #   BUILD_TARGET_IMAGE=$CLOUD_TYPE
+      # fi
+      docker build \
+        --platform linux/x86_64 \
+        --target $BUILD_TARGET_IMAGE \
+        $(npmBuildSecret) \
+        -t $(imageRef $image) \
+        -f ${images[$image]}/${Dockerfiles[$image]} \
+        ${images[$image]}
+    done
+  fi
+  ;;
+
+"clean")
   cleanJobs
   ;;
 
