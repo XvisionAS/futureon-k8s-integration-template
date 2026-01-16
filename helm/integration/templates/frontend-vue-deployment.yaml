@@ -8,6 +8,8 @@ metadata:
     timestamp: "{{ ((now).Unix) }}"
 spec:
   replicas: {{ .Values.frontendvue.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "integration.frontendvue.selectorLabels" . | nindent 6 }}
