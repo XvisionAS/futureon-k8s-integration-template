@@ -4,7 +4,7 @@
 
 setenv BUILD_TARGET production
 setenv BUILD_NPM_RC 
-setenv IMAGE_REGISTRY 
+setenv IMAGE_REPO 
 setenv RELEASE sample
 setenv DEFAULT_DNS_DOMAIN 
 setenv KUBE_CONTEXT 

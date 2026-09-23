@@ -98,7 +98,7 @@ function imageTag() {
 
 function imageRef() {
   : "${1?image name must be specified}"
-  echo "${IMAGE_REGISTRY}${IMAGE_REGISTRY_PATH:-""}/$1:$(imageTag)"
+  echo "${IMAGE_REPO}/$1:$(imageTag)"
 }
 
 function npmBuildSecret() {
@@ -245,7 +245,7 @@ case "$1" in
     --namespace $KUBE_NAMESPACE \
     $HELM_DEPLOY_PARAMS \
     --set image.tag=$(imageTag) \
-    --set image.registry=$IMAGE_REGISTRY \
+    --set image.registry=$IMAGE_REPO \
     --set defaultDnsDomain=$DEFAULT_DNS_DOMAIN \
     ${@:2}
   ;;

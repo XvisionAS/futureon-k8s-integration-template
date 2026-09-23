@@ -14,7 +14,7 @@ KUBE_NAMESPACE = os.environ.get('KUBE_NAMESPACE', 'none')
 RELEASE = os.environ.get('RELEASE', 'none')
 
 DEFAULT_DNS_DOMAIN = os.environ.get('DEFAULT_DNS_DOMAIN', 'toc.systems')
-IMAGE_REGISTRY = os.environ.get('IMAGE_REGISTRY', 'registry.toc.systems')
+IMAGE_REPO = os.environ.get('IMAGE_REPO', 'registry.toc.systems')
 CLOUD_TYPE = os.environ.get('CLOUD_TYPE', 'onpremise')
 
 HELM_SET_STRING = os.environ.get('HELM_DEPLOY_PARAMS', '')
@@ -31,8 +31,8 @@ DOCKER_BUILD_ARGS = {
 }
 
 allow_k8s_contexts(KUBE_CONTEXT)
-print("Image registry: %s" % IMAGE_REGISTRY)
-default_registry(IMAGE_REGISTRY)
+print("Image registry: %s" % IMAGE_REPO)
+default_registry(IMAGE_REPO)
 
 # -----------------------------------------------------------------------------
 # Integration services to deploy
@@ -75,7 +75,7 @@ def register_js_app(entry, labels=""):
     local_port = entry.get("local_port", 0)
     container_port = entry.get("container_port", 0)
 
-    full_image_name = "%s/%s" % (IMAGE_REGISTRY, image_name)
+    full_image_name = "%s/%s" % (IMAGE_REPO, image_name)
     docker_build(
         full_image_name,
         context=source_dir,

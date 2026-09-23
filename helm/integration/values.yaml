@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 image:
-  # this will be set from IMAGE_REGISTRY
+  # this will be set from IMAGE_REPO
   # registry: registry.toc.systems
   tag: latest
   pullPolicy: IfNotPresent
